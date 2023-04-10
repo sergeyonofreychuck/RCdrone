@@ -1,5 +1,6 @@
 
 struct button {
+  int btn;
   int pin;
   int state = 0;
 };
@@ -22,24 +23,30 @@ int RESET_PIN = 23;
 
 button buttons[7];
 
+void (*buttonPressed)(int);
+
 void setupUserInput() {
   buttons[RIGHT].pin = RIGHT_PIN;
+  buttons[RIGHT].btn = RIGHT;
   buttons[LEFT].pin = LEFT_PIN;
+  buttons[LEFT].btn = LEFT;
   buttons[UP].pin = UP_PIN;
+  buttons[UP].btn = UP;
   buttons[DOWN].pin = DOWN_PIN;
+  buttons[DOWN].btn = DOWN;
   buttons[CENTER].pin = CENTER_PIN;
+  buttons[CENTER].btn = CENTER;
   buttons[SET].pin = SET_PIN;
+  buttons[SET].btn = SET;
   buttons[RESET].pin = RESET_PIN;
-}
-
-void tst(int newValue) {
-
+  buttons[RESET].btn = RESET;
 }
 
 void readButton(struct button *btn, int newValue) {
   if (btn->state != newValue) {
-    Serial.print(F("Value changed: "));
-    Serial.println(newValue);
+    if (!newValue) {
+      buttonPressed(btn->btn);
+    }
   }
   btn->state = newValue;
 }
@@ -48,5 +55,9 @@ void readUserInput() {
   for (int i = 0; i < 7; i++) {
     readButton(&buttons[i], !digitalRead(buttons[i].pin));
   }
+}
+
+void setupButtonsCallback(void (*callback)(int)) {
+  buttonPressed = callback;
 }
 
