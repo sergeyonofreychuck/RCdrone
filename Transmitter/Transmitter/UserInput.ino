@@ -47,8 +47,8 @@ void readButton(struct button *btn, int newValue) {
     if (!newValue) {
       buttonPressed(btn->btn);
     }
+    btn->state = newValue;
   }
-  btn->state = newValue;
 }
 
 void readUserInput() {
