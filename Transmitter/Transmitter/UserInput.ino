@@ -5,40 +5,32 @@ struct button {
   int state = 0;
 };
 
-int RIGHT = 0;
-int LEFT = 1;
-int UP = 2;
-int DOWN = 3;
-int CENTER = 4;
-int SET = 5;
-int RESET = 6;
-
-int RIGHT_PIN = 24;
-int LEFT_PIN = 26;
-int UP_PIN = 29;
-int DOWN_PIN = 27;
-int CENTER_PIN = 25;
-int SET_PIN = 22;
-int RESET_PIN = 23;
+const int RIGHT = 0;
+const int LEFT = 1;
+const int UP = 2;
+const int DOWN = 3;
+const int CENTER = 4;
+const int SET = 5;
+const int RESET = 6;
 
 button buttons[7];
 
 void (*buttonPressed)(int);
 
 void setupUserInput() {
-  buttons[RIGHT].pin = RIGHT_PIN;
+  buttons[RIGHT].pin = 24;
   buttons[RIGHT].btn = RIGHT;
-  buttons[LEFT].pin = LEFT_PIN;
+  buttons[LEFT].pin = 26;
   buttons[LEFT].btn = LEFT;
-  buttons[UP].pin = UP_PIN;
+  buttons[UP].pin = 29;
   buttons[UP].btn = UP;
-  buttons[DOWN].pin = DOWN_PIN;
+  buttons[DOWN].pin = 27;
   buttons[DOWN].btn = DOWN;
-  buttons[CENTER].pin = CENTER_PIN;
+  buttons[CENTER].pin = 25;
   buttons[CENTER].btn = CENTER;
-  buttons[SET].pin = SET_PIN;
+  buttons[SET].pin = 22;
   buttons[SET].btn = SET;
-  buttons[RESET].pin = RESET_PIN;
+  buttons[RESET].pin = 23;
   buttons[RESET].btn = RESET;
 }
 
