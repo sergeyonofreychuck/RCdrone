@@ -1,3 +1,5 @@
+#ifndef RC_USER_INPUT
+#define RC_USER_INPUT
 
 struct button {
   int btn;
@@ -53,3 +55,4 @@ void setupButtonsCallback(void (*callback)(int)) {
   buttonPressed = callback;
 }
 
+#endif
