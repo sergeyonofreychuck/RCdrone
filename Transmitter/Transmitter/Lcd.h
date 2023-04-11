@@ -25,6 +25,14 @@ int length(float f) {
 }
 
 void showSettingsItem(String name, float value, float min, float max, bool edit){
+  Serial.println("showSettingsItem ");
+  Serial.println(name);  
+  Serial.println(value);
+  Serial.println(min);
+  Serial.println(max);
+  Serial.println(edit);
+
+
   lcd.setCursor(1, 0);
   lcd.print(name);
   lcd.setCursor(15-length(value), 0);

@@ -6,9 +6,9 @@ void setup() {
   Serial.begin(9600);
   Serial.println("Setup");
 
-  // initSettings();
-  // initDefaults();
-  // readSettings();
+  initSettings();
+  //initDefaults();
+  readSettings();
 
   initScreen();  
 

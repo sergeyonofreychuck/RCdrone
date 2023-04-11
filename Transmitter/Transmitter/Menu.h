@@ -11,6 +11,7 @@ static int ITEM_TELEMETRY = 2;
 
 static int ITEM_MENU_TEST_1 = 1;
 static int ITEM_MENU_TEST_2 = 2;
+static int ITEM_MENU_TEST_3 = 3;
 
 struct menuItem {
   int id;
@@ -19,12 +20,11 @@ struct menuItem {
   int type;
 };
 
-menuItem menuItems[2];
+menuItem menuItems[3];
 
-static int MENU_SETTINGS_MAP[][2] = {
-  {ITEM_MENU_TEST_1, SETTING_TEST_1},
-  {ITEM_MENU_TEST_2, SETTING_TEST_2},  
-};
+menuItem *activeItem;
+bool edit = false;
+float currentSettingValue;
 
 void addMenuItem(struct menuItem *item, int id, int parent, String name, int type) {
   item->id = id;
@@ -33,21 +33,36 @@ void addMenuItem(struct menuItem *item, int id, int parent, String name, int typ
   item->type = type;
 }
 
+void redrowSetting() {
+
+}
+
+void redrowMenu() {
+  Serial.println("redrowMenu");
+  if (activeItem->type == ITEM_MENU_SETTING) {
+    RcSetting *setting = getSetting(activeItem->id);
+    showSettingsItem(activeItem->name, currentSettingValue, setting->min, setting->max, edit);
+  }
+}
+
 void buttonPresed(int button) {
   Serial.print(F("Button pressed: "));
   Serial.println(button);
-}
-
-void showMenuItem(struct menuItem *item) {
-  showSettingsItem(item->name, 0.5, -2.5, -12.4, true);
+  if (button == CENTER) {
+    edit = !edit;
+  }
+  redrowMenu();
 }
 
 void setupMenu() {
   setupButtonsCallback(buttonPresed);
   addMenuItem(&menuItems[0], ITEM_MENU_TEST_1, 0, "item_1", ITEM_MENU_SETTING);
   addMenuItem(&menuItems[1], ITEM_MENU_TEST_2, 0, "item_2", ITEM_MENU_SETTING);
+  addMenuItem(&menuItems[2], ITEM_MENU_TEST_3, 0, "item_3", ITEM_MENU_SETTING);
 
-  showMenuItem(&menuItems[0]);
+  activeItem = &menuItems[1];
+  currentSettingValue = getSettingValue(activeItem->id);
+  redrowMenu();
 }
 
 #endif
