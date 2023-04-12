@@ -13,6 +13,7 @@ struct RcSetting {
 };
 
 RcSetting settings[3];
+const int SETTINGS_SIZE = 3;
 
 const int SETTING_TEST_1 = 1;
 const int SETTING_TEST_2 = 2;
@@ -34,14 +35,14 @@ void initSettings() {
 }
 
 void initDefaults() {
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < SETTINGS_SIZE; i++) {
     RcSetting *s = &settings[i];
     EEPROM.put(s->addr, s->defaultValue);
   }  
 }
 
 void readSettings() {
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < SETTINGS_SIZE; i++) {
     RcSetting *s = &settings[i];
     float f = 0.00f;
     EEPROM.get(s->addr, f);
@@ -52,7 +53,7 @@ void readSettings() {
 RcSetting* getSetting(int id) {
   Serial.print("getSetting ");
   Serial.println(id);
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < SETTINGS_SIZE; i++) {
     RcSetting *current = &settings[i];
     if (current->id == id) {
       return current;

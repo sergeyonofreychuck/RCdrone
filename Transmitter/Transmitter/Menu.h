@@ -21,6 +21,7 @@ struct menuItem {
 };
 
 menuItem menuItems[3];
+const int MENU_SIZE = 3;
 
 menuItem *activeItem;
 bool edit = false;
@@ -42,14 +43,85 @@ void redrowMenu() {
   if (activeItem->type == ITEM_MENU_SETTING) {
     RcSetting *setting = getSetting(activeItem->id);
     showSettingsItem(activeItem->name, currentSettingValue, setting->min, setting->max, edit);
+  } 
+}
+
+void buttonPressedEditMode (int button) {
+  if (activeItem->type != ITEM_MENU_SETTING) {
+    Serial.print(F("ERROR: edit not settings "));   
+    Serial.println(activeItem->id); 
+    return;
+  }
+}
+
+menuItem* getById(int id) {
+  for (int i=0; i < MENU_SIZE; i++) {
+    if (menuItems[i].id == id) {
+      return &menuItems[i];      
+    }    
+  }
+}
+
+menuItem* findPrev(menuItem *item) {
+  bool found = false;
+  for (int i=MENU_SIZE-1; i >=0 ; i--) {
+    menuItem *current = &menuItems[i];      
+    if(current->parent != item->parent) {
+      continue;
+    }     
+    if (current->id == item->id) {
+      found = true;   
+    } else if (found) {
+      return current;
+    }  
+  }  
+  return item;
+}
+
+menuItem* findNext(menuItem *item) {
+  bool found = false;
+  for (int i=0; i < MENU_SIZE ; i++) {
+    menuItem *current = &menuItems[i];   
+    if(current->parent != item->parent) {
+      continue;
+    }     
+    if (current->id == item->id) {
+      found = true;   
+    } else if (found) {
+      return current;
+    }  
+  }  
+  return item;
+}
+
+void navigate (int button) {
+  if (edit) {
+    Serial.print(F("ERROR: navigation in edit mode")); 
+    return;
+  }
+
+  if (button == LEFT) {
+    int parentId = activeItem->parent;
+    if (parentId != 0) {
+      activeItem = getById(parentId);
+    }
+  } else if (button == UP) {
+    activeItem = findPrev(activeItem);    
+  } else if (button == DOWN) {
+    activeItem = findNext(activeItem);    
+  }
+  if (activeItem->type == ITEM_MENU_SETTING) {
+    currentSettingValue = getSettingValue(activeItem->id); 
   }
 }
 
 void buttonPresed(int button) {
   Serial.print(F("Button pressed: "));
   Serial.println(button);
-  if (button == CENTER) {
-    edit = !edit;
+  if (edit) {
+    buttonPressedEditMode (button);
+  } else {
+    navigate(button);
   }
   redrowMenu();
 }
