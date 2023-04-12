@@ -32,14 +32,15 @@ void showSettingsItem(String name, float value, float min, float max, bool edit)
   Serial.println(max);
   Serial.println(edit);
 
+  lcd.clear();
 
   lcd.setCursor(1, 0);
   lcd.print(name);
-  lcd.setCursor(15-length(value), 0);
+  lcd.setCursor(15-length(value) + 1, 0);
   lcd.print(value);
   lcd.setCursor(1, 1);
   lcd.print(min);
-  lcd.setCursor(15-length(max), 1);
+  lcd.setCursor(15-length(max) + 1, 1);
   lcd.print(max);
 
   lcd.setCursor(0,0);
@@ -48,6 +49,16 @@ void showSettingsItem(String name, float value, float min, float max, bool edit)
   } else {
     lcd.noBlink();
   }
+}
+
+void showGroupItem(String name){
+  Serial.println("showGroupItem ");
+  Serial.println(name);  
+
+  lcd.clear();
+
+  lcd.setCursor(1, 0);
+  lcd.print(name);
 }
 
 #endif

@@ -7,7 +7,7 @@ void setup() {
   Serial.println("Setup");
 
   initSettings();
-  initDefaults();
+  //initDefaults();
   readSettings();
 
   initScreen();  

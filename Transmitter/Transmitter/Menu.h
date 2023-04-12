@@ -7,11 +7,13 @@
 
 static int ITEM_MENU_GROUP = 0;
 static int ITEM_MENU_SETTING = 1;
-static int ITEM_TELEMETRY = 2;
+static int ITEM_SCREEN = 2;
 
 static int ITEM_MENU_TEST_1 = 1;
 static int ITEM_MENU_TEST_2 = 2;
 static int ITEM_MENU_TEST_3 = 3;
+static int GROUP_MENU_SETTINGS = 101;
+static int GROUP_MENU_TELEMETRY = 102;
 
 struct menuItem {
   int id;
@@ -20,8 +22,8 @@ struct menuItem {
   int type;
 };
 
-menuItem menuItems[3];
-const int MENU_SIZE = 3;
+menuItem menuItems[5];
+const int MENU_SIZE = 5;
 
 menuItem *activeItem;
 bool edit = false;
@@ -43,7 +45,9 @@ void redrowMenu() {
   if (activeItem->type == ITEM_MENU_SETTING) {
     RcSetting *setting = getSetting(activeItem->id);
     showSettingsItem(activeItem->name, currentSettingValue, setting->min, setting->max, edit);
-  } 
+  } else if (activeItem->type == ITEM_MENU_GROUP) {
+    showGroupItem(activeItem->name);
+  }
 }
 
 void buttonPressedEditMode (int button) {
@@ -94,6 +98,21 @@ menuItem* findNext(menuItem *item) {
   return item;
 }
 
+menuItem* findFirstChild(menuItem *item) {
+  if (activeItem->type != ITEM_MENU_GROUP) {
+    Serial.print(F("ERROR: finding child of not group "));   
+    Serial.println(item->id); 
+    return;
+  }
+  for (int i=0; i < MENU_SIZE ; i++) {
+    menuItem *current = &menuItems[i];   
+    if(current->parent == item->id) {
+      return current;
+    }     
+  } 
+  return item;
+}
+
 void navigate (int button) {
   if (edit) {
     Serial.print(F("ERROR: navigation in edit mode")); 
@@ -109,6 +128,12 @@ void navigate (int button) {
     activeItem = findPrev(activeItem);    
   } else if (button == DOWN) {
     activeItem = findNext(activeItem);    
+  } else if (button == CENTER) {
+    if (activeItem->type == ITEM_MENU_SETTING) {
+      edit = true; 
+    } else if (activeItem->type == ITEM_MENU_GROUP) {
+      activeItem = findFirstChild(activeItem);
+    }
   }
   if (activeItem->type == ITEM_MENU_SETTING) {
     currentSettingValue = getSettingValue(activeItem->id); 
@@ -128,12 +153,13 @@ void buttonPresed(int button) {
 
 void setupMenu() {
   setupButtonsCallback(buttonPresed);
-  addMenuItem(&menuItems[0], ITEM_MENU_TEST_1, 0, "item_1", ITEM_MENU_SETTING);
-  addMenuItem(&menuItems[1], ITEM_MENU_TEST_2, 0, "item_2", ITEM_MENU_SETTING);
-  addMenuItem(&menuItems[2], ITEM_MENU_TEST_3, 0, "item_3", ITEM_MENU_SETTING);
+  addMenuItem(&menuItems[0], ITEM_MENU_TEST_1, GROUP_MENU_SETTINGS, "item_1", ITEM_MENU_SETTING);
+  addMenuItem(&menuItems[1], ITEM_MENU_TEST_2, GROUP_MENU_SETTINGS, "item_2", ITEM_MENU_SETTING);
+  addMenuItem(&menuItems[2], ITEM_MENU_TEST_3, GROUP_MENU_SETTINGS, "item_3", ITEM_MENU_SETTING);
+  addMenuItem(&menuItems[3], GROUP_MENU_SETTINGS, 0, "settings", ITEM_MENU_GROUP);
+  addMenuItem(&menuItems[4], GROUP_MENU_TELEMETRY, 0, "telemetry", ITEM_MENU_GROUP);
 
-  activeItem = &menuItems[1];
-  currentSettingValue = getSettingValue(activeItem->id);
+  activeItem = getById(GROUP_MENU_SETTINGS);
   redrowMenu();
 }
 
