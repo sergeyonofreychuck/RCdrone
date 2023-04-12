@@ -56,6 +56,29 @@ void buttonPressedEditMode (int button) {
     Serial.println(activeItem->id); 
     return;
   }
+
+  RcSetting *setting = getSetting(activeItem->id);
+  float step = setting->step;
+
+  if (button == LEFT) {
+    float min = setting->min;
+    currentSettingValue = currentSettingValue - step;
+    if (currentSettingValue < min) {
+      currentSettingValue = min;
+    } 
+  } else if (button == RIGHT){
+    float max = setting->max;
+    currentSettingValue = currentSettingValue + step;
+    if (currentSettingValue > max) {
+      currentSettingValue = max;
+    }    
+  } else if (button == CENTER) {
+    updateSetting(setting->id, currentSettingValue);
+    edit = false;
+  } else if (button == UP) {
+    currentSettingValue = setting->value;
+    edit = false;
+  }
 }
 
 menuItem* getById(int id) {
@@ -144,7 +167,7 @@ void buttonPresed(int button) {
   Serial.print(F("Button pressed: "));
   Serial.println(button);
   if (edit) {
-    buttonPressedEditMode (button);
+    buttonPressedEditMode(button);
   } else {
     navigate(button);
   }

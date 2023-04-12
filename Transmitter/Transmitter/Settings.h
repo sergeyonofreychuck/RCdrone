@@ -69,4 +69,15 @@ float getSettingValue(int id) {
   return setting->value;
 }
 
+void updateSetting(int id, float value) {
+  RcSetting *s = getSetting(id);
+  if (value < s->min || value > s->max) {
+      Serial.print("ERROR: updating value not in range");
+      Serial.println(id);
+      Serial.println(value);
+  }
+  EEPROM.put(s->addr, value);
+  readSettings();
+}
+
 #endif
