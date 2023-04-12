@@ -24,6 +24,19 @@ int length(float f) {
   return count + 3;
 }
 
+int length(int i) {
+  int n = i;
+  int count = 0;
+  do {
+    n /= 10;
+    ++count;
+  } while (n != 0);
+  if (i < 0) {
+    count++;
+  }
+  return count;
+}
+
 void showSettingsItem(String name, float value, float min, float max, bool edit){
   Serial.println("showSettingsItem ");
   Serial.println(name);  
@@ -49,6 +62,25 @@ void showSettingsItem(String name, float value, float min, float max, bool edit)
   } else {
     lcd.noBlink();
   }
+}
+
+void showIntScreen(String name, int value, int left, int right){
+  Serial.println("showSettingsItem ");
+  Serial.println(name);  
+  Serial.println(value);
+  Serial.println(left);
+  Serial.println(right);
+
+  lcd.clear();
+
+  lcd.setCursor(0, 0);
+  lcd.print(name);
+  lcd.setCursor(15-length(value) + 1, 0);
+  lcd.print(value);
+  lcd.setCursor(0, 1);
+  lcd.print(left);
+  lcd.setCursor(15-length(right) + 1, 1);
+  lcd.print(right);
 }
 
 void showGroupItem(String name){

@@ -4,6 +4,7 @@
 #include "Settings.h"
 #include "UserInput.h"
 #include "Lcd.h"
+#include "Telemetry.h"
 
 static int ITEM_MENU_GROUP = 0;
 static int ITEM_MENU_SETTING = 1;
@@ -14,6 +15,8 @@ static int ITEM_MENU_TEST_2 = 2;
 static int ITEM_MENU_TEST_3 = 3;
 static int GROUP_MENU_SETTINGS = 101;
 static int GROUP_MENU_TELEMETRY = 102;
+static int SCREEN_TELEMENTRY_1 = 201;
+
 
 struct menuItem {
   int id;
@@ -22,10 +25,10 @@ struct menuItem {
   int type;
 };
 
-menuItem menuItems[5];
-const int MENU_SIZE = 5;
+menuItem menuItems[6];
+const int MENU_SIZE = 6;
 
-menuItem *activeItem;
+menuItem *activeMenuItem;
 bool edit = false;
 float currentSettingValue;
 
@@ -42,22 +45,22 @@ void redrowSetting() {
 
 void redrowMenu() {
   Serial.println("redrowMenu");
-  if (activeItem->type == ITEM_MENU_SETTING) {
-    RcSetting *setting = getSetting(activeItem->id);
-    showSettingsItem(activeItem->name, currentSettingValue, setting->min, setting->max, edit);
-  } else if (activeItem->type == ITEM_MENU_GROUP) {
-    showGroupItem(activeItem->name);
+  if (activeMenuItem->type == ITEM_MENU_SETTING) {
+    RcSetting *setting = getSetting(activeMenuItem->id);
+    showSettingsItem(activeMenuItem->name, currentSettingValue, setting->min, setting->max, edit);
+  } else if (activeMenuItem->type == ITEM_MENU_GROUP) {
+    showGroupItem(activeMenuItem->name);
   }
 }
 
 void buttonPressedEditMode (int button) {
-  if (activeItem->type != ITEM_MENU_SETTING) {
+  if (activeMenuItem->type != ITEM_MENU_SETTING) {
     Serial.print(F("ERROR: edit not settings "));   
-    Serial.println(activeItem->id); 
+    Serial.println(activeMenuItem->id); 
     return;
   }
 
-  RcSetting *setting = getSetting(activeItem->id);
+  RcSetting *setting = getSetting(activeMenuItem->id);
   float step = setting->step;
 
   if (button == LEFT) {
@@ -122,7 +125,7 @@ menuItem* findNext(menuItem *item) {
 }
 
 menuItem* findFirstChild(menuItem *item) {
-  if (activeItem->type != ITEM_MENU_GROUP) {
+  if (activeMenuItem->type != ITEM_MENU_GROUP) {
     Serial.print(F("ERROR: finding child of not group "));   
     Serial.println(item->id); 
     return;
@@ -136,6 +139,15 @@ menuItem* findFirstChild(menuItem *item) {
   return item;
 }
 
+void drawScreen() {
+  Serial.print(F("drawScreen: "));
+  if (activeMenuItem->type == ITEM_SCREEN){  
+    if (activeMenuItem->id == SCREEN_TELEMENTRY_1) {
+      drawTelemetry1();
+    }
+  } 
+}
+
 void navigate (int button) {
   if (edit) {
     Serial.print(F("ERROR: navigation in edit mode")); 
@@ -143,23 +155,25 @@ void navigate (int button) {
   }
 
   if (button == LEFT) {
-    int parentId = activeItem->parent;
+    int parentId = activeMenuItem->parent;
     if (parentId != 0) {
-      activeItem = getById(parentId);
+      activeMenuItem = getById(parentId);
     }
   } else if (button == UP) {
-    activeItem = findPrev(activeItem);    
+    activeMenuItem = findPrev(activeMenuItem);    
   } else if (button == DOWN) {
-    activeItem = findNext(activeItem);    
+    activeMenuItem = findNext(activeMenuItem);    
   } else if (button == CENTER) {
-    if (activeItem->type == ITEM_MENU_SETTING) {
+    if (activeMenuItem->type == ITEM_MENU_SETTING) {
       edit = true; 
-    } else if (activeItem->type == ITEM_MENU_GROUP) {
-      activeItem = findFirstChild(activeItem);
+    } else if (activeMenuItem->type == ITEM_MENU_GROUP) {
+      activeMenuItem = findFirstChild(activeMenuItem);
     }
   }
-  if (activeItem->type == ITEM_MENU_SETTING) {
-    currentSettingValue = getSettingValue(activeItem->id); 
+  if (activeMenuItem->type == ITEM_SCREEN){
+    drawScreen();
+  } else if (activeMenuItem->type == ITEM_MENU_SETTING) {
+    currentSettingValue = getSettingValue(activeMenuItem->id); 
   }
 }
 
@@ -181,9 +195,21 @@ void setupMenu() {
   addMenuItem(&menuItems[2], ITEM_MENU_TEST_3, GROUP_MENU_SETTINGS, "item_3", ITEM_MENU_SETTING);
   addMenuItem(&menuItems[3], GROUP_MENU_SETTINGS, 0, "settings", ITEM_MENU_GROUP);
   addMenuItem(&menuItems[4], GROUP_MENU_TELEMETRY, 0, "telemetry", ITEM_MENU_GROUP);
+  addMenuItem(&menuItems[5], SCREEN_TELEMENTRY_1, GROUP_MENU_TELEMETRY, "T basic", ITEM_SCREEN);
 
-  activeItem = getById(GROUP_MENU_SETTINGS);
+  activeMenuItem = getById(GROUP_MENU_SETTINGS);
   redrowMenu();
+}
+
+int getActiveScreen() {
+  if (activeMenuItem->type == ITEM_SCREEN) {
+    return activeMenuItem->id;
+  }
+  return -1;
+}
+
+void runMenu() {
+
 }
 
 #endif

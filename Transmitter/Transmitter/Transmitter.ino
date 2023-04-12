@@ -1,6 +1,7 @@
 #include "Settings.h"
 #include "Menu.h"
 #include "Lcd.h"
+#include "Telemetry.h"
 
 void setup() {
   Serial.begin(9600);
