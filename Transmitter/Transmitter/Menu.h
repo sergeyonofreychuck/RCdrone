@@ -1,21 +1,77 @@
 #ifndef RC_MENU
 #define RC_MENU
 
+void setupMenu();
+void addMenuItem(struct menuItem *item, int id, int parent, String name, int type);
+void redrowMenu();
+void drawScreen();
+
+void buttonPresed(int button);
+void navigate (int button);
+void buttonPressedEditMode (int button);
+
+menuItem* getById(int id);
+menuItem* findPrev(menuItem *item);
+menuItem* findNext(menuItem *item);
+menuItem* findFirstChild(menuItem *item);
+int getActiveScreen();
+
 #include "Settings.h"
 #include "UserInput.h"
 #include "Lcd.h"
 #include "Telemetry.h"
 
-static int ITEM_MENU_GROUP = 0;
-static int ITEM_MENU_SETTING = 1;
-static int ITEM_SCREEN = 2;
+//Settings
+//--Setup Analogs           #Group
+//----Set Zeros             #Action; 500, 500 
+//----Set Right Limit       #Action; 0
+//----Set Left Limit        #Action; 1023
+//----Set Top Limit         #Action; 0
+//----Set Bottom Limit      #Action; 1023
+//----Set Thrust Min        #Action; 0
+//----Set Thrust Max        #Action; 1023
+//--Setup RC                #Group
+//----Right Scale           #Item 1-100; 10; 100
+//----Left Scale            #Item 1-100; 10; 100 
+//----Top Scale             #Item 1-100; 10; 100
+//----Bottom Scale          #Item 1-100; 10; 100
+//----Thrust Scale          #Item 1-100; 5; 100
+//----Right Start Point     #Item 1-100; 1; 50
+//----Left Start Point      #Item 1-100; 1; 50
+//--Reset To Default        #Action
+//Telemetry                 #Group
+//--T Basic                 #Screen
+//
 
-static int ITEM_MENU_TEST_1 = 1;
-static int ITEM_MENU_TEST_2 = 2;
-static int ITEM_MENU_TEST_3 = 3;
-static int GROUP_MENU_SETTINGS = 101;
-static int GROUP_MENU_TELEMETRY = 102;
-static int SCREEN_TELEMENTRY_1 = 201;
+const int ITEM_TYPE_MENU_GROUP = 0;
+const int ITEM_TYPE_MENU_SETTING = 1;
+const int ITEM_TYPE_SCREEN = 2;
+const int ITEM_TYPE_ACTION = 3;
+
+const int ACTION_MENU_SET_ZEROS = 1;
+const int ACTION_MENU_SET_RIGHT_LIMIT = 2;
+const int ACTION_MENU_SET_LEFT_LIMIT = 3;
+const int ACTION_MENU_SET_TOP_LIMIT = 4;
+const int ACTION_MENU_SET_BOTTOM_LIMIT = 5;
+const int ACTION_MENU_SET_THUST_MIN = 6;
+const int ACTION_MENU_SET_THRUST_MAX = 7;
+
+const int ITEM_MENU_RIGHT_SCALE = 8;
+const int ITEM_MENU_LEFT_SCALE = 9;
+const int ITEM_MENU_TOP_SCALE = 10;
+const int ITEM_MENU_BOTTOM_SCALE = 11;
+const int ITEM_MENU_THRUST_SCALE = 12;
+const int ITEM_MENU_RIGHT_START = 13;
+const int ITEM_MENU_LEFT_START = 14;
+
+const int ACTION_MENU_DEFAULTS = 15;
+
+const int GROUP_MENU_SETTINGS = 101;
+const int GROUP_MENU_SETUP_ANALOGS = 102;
+const int GROUP_MENU_SETUP_RC = 103;
+const int GROUP_MENU_TELEMETRY = 104;
+
+const int SCREEN_TELEMENTRY_1 = 201;
 
 
 struct menuItem {
@@ -25,12 +81,46 @@ struct menuItem {
   int type;
 };
 
-menuItem menuItems[6];
-const int MENU_SIZE = 6;
+menuItem menuItems[20];
+const int MENU_SIZE = 20;
 
 menuItem *activeMenuItem;
 bool edit = false;
 float currentSettingValue;
+
+void setupMenu() {
+  setupButtonsCallback(buttonPresed);
+
+  addMenuItem(&menuItems[0], GROUP_MENU_SETTINGS, 0, "Settings", ITEM_TYPE_MENU_GROUP);
+
+  addMenuItem(&menuItems[1], GROUP_MENU_SETUP_ANALOGS, 0, "Setup Analogs", ITEM_TYPE_MENU_GROUP);
+
+  addMenuItem(&menuItems[2], ACTION_MENU_SET_ZEROS, GROUP_MENU_SETUP_ANALOGS, "Set Zeros", ITEM_TYPE_ACTION);
+  addMenuItem(&menuItems[3], ACTION_MENU_SET_RIGHT_LIMIT, GROUP_MENU_SETUP_ANALOGS, "Set Right Limit", ITEM_TYPE_ACTION);
+  addMenuItem(&menuItems[4], ACTION_MENU_SET_LEFT_LIMIT, GROUP_MENU_SETUP_ANALOGS, "Set Left Limit", ITEM_TYPE_ACTION);
+  addMenuItem(&menuItems[5], ACTION_MENU_SET_TOP_LIMIT, GROUP_MENU_SETUP_ANALOGS, "Set Top Limit", ITEM_TYPE_ACTION);
+  addMenuItem(&menuItems[6], ACTION_MENU_SET_BOTTOM_LIMIT, GROUP_MENU_SETUP_ANALOGS, "Set Bottom Limit", ITEM_TYPE_ACTION);
+  addMenuItem(&menuItems[7], ACTION_MENU_SET_THUST_MIN, GROUP_MENU_SETUP_ANALOGS, "Set Thrust Min", ITEM_TYPE_ACTION);
+  addMenuItem(&menuItems[8], ACTION_MENU_SET_THRUST_MAX, GROUP_MENU_SETUP_ANALOGS, "Set Thrust Max", ITEM_TYPE_ACTION);
+
+  addMenuItem(&menuItems[9], GROUP_MENU_SETUP_RC, 0, "Setup RC", ITEM_TYPE_MENU_GROUP);
+
+  addMenuItem(&menuItems[10], ITEM_MENU_RIGHT_SCALE, GROUP_MENU_SETUP_RC, "Right Scale", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[11], ITEM_MENU_LEFT_SCALE, GROUP_MENU_SETUP_RC, "Left Scale", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[12], ITEM_MENU_TOP_SCALE, GROUP_MENU_SETUP_RC, "Top Scale", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[13], ITEM_MENU_BOTTOM_SCALE, GROUP_MENU_SETUP_RC, "Bottom Scale", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[14], ITEM_MENU_THRUST_SCALE, GROUP_MENU_SETUP_RC, "Thrust Scale", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[15], ITEM_MENU_RIGHT_START, GROUP_MENU_SETUP_RC, "Right Start", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[16], ITEM_MENU_LEFT_START, GROUP_MENU_SETUP_RC, "Left Start", ITEM_TYPE_MENU_SETTING);
+
+  addMenuItem(&menuItems[17], GROUP_MENU_TELEMETRY, 0, "telemetry", ITEM_TYPE_MENU_GROUP);
+  addMenuItem(&menuItems[18], SCREEN_TELEMENTRY_1, GROUP_MENU_TELEMETRY, "T basic", ITEM_TYPE_SCREEN);
+
+  addMenuItem(&menuItems[19], ACTION_MENU_DEFAULTS, GROUP_MENU_SETTINGS, "Reset To Detaults", ITEM_TYPE_ACTION);
+
+  activeMenuItem = getById(GROUP_MENU_SETTINGS);
+  redrowMenu();
+}
 
 void addMenuItem(struct menuItem *item, int id, int parent, String name, int type) {
   item->id = id;
@@ -39,23 +129,46 @@ void addMenuItem(struct menuItem *item, int id, int parent, String name, int typ
   item->type = type;
 }
 
-void redrowSetting() {
-
-}
-
 void redrowMenu() {
   Serial.println("redrowMenu");
-  if (activeMenuItem->type == ITEM_MENU_SETTING) {
+  if (activeMenuItem->type == ITEM_TYPE_MENU_SETTING) {
     RcSetting *setting = getSetting(activeMenuItem->id);
     showSettingsItem(activeMenuItem->name, currentSettingValue, setting->min, setting->max, edit);
-  } else if (activeMenuItem->type == ITEM_MENU_GROUP) {
+  } else if (activeMenuItem->type == ITEM_TYPE_MENU_GROUP) {
     showGroupItem(activeMenuItem->name);
+  } else if (activeMenuItem->type == ITEM_TYPE_ACTION) {
+    switch (activeMenuItem->id) {
+      case ACTION_MENU_SET_ZEROS:
+        float currentHorizont = getSettingValue(SETTING_HORIZONTAL_ZERO);
+        float currentVertical = getSettingValue(SETTING_VERTICAL_ZERO);
+        showTwoFloatItem(activeMenuItem->name, currentHorizont, currentHorizont, edit);
+        break;
+      case ACTION_MENU_SET_RIGHT_LIMIT: 
+        float rightLimit = getSettingValue(SETTING_RIGHT_LIMIT);
+        showSingleFloatItem(activeMenuItem->name, rightLimit, edit);
+        break;
+      case ACTION_MENU_SET_LEFT_LIMIT: 
+        float leftLimit = getSettingValue(SETTING_LEFT_LIMIT);
+        showSingleFloatItem(activeMenuItem->name, leftLimit, edit);
+        break;
+      case ACTION_MENU_SET_TOP_LIMIT: 
+        float topLimit = getSettingValue(SETTING_TOP_LIMIT);
+        showSingleFloatItem(activeMenuItem->name, topLimit, edit);
+        break;
+      case ACTION_MENU_SET_BOTTOM_LIMIT: 
+        float bottomLimit = getSettingValue(SETTING_BOTTOM_LIMIT);
+        showSingleFloatItem(activeMenuItem->name, bottomLimit, edit);
+        break;
+      case ACTION_MENU_DEFAULTS: 
+        showEditItem(activeMenuItem->name, edit);
+        break;
+    }
   }
 }
 
-void buttonPressedEditMode (int button) {
-  if (activeMenuItem->type != ITEM_MENU_SETTING) {
-    Serial.print(F("ERROR: edit not settings "));   
+void buttonPressedEditModeItem (int button) {
+  if (activeMenuItem->type != ITEM_TYPE_MENU_SETTING) {
+    Serial.print(F("ERROR: edit not settings or action"));   
     Serial.println(activeMenuItem->id); 
     return;
   }
@@ -80,6 +193,41 @@ void buttonPressedEditMode (int button) {
     edit = false;
   } else if (button == UP) {
     currentSettingValue = setting->value;
+    edit = false;
+  }
+}
+
+void buttonPressedEditModeAction(int button) {
+  if (activeMenuItem->type != ITEM_TYPE_ACTION) {
+    Serial.print(F("ERROR: edit not settings or action"));   
+    Serial.println(activeMenuItem->id); 
+    return;
+  }
+  if (button == UP) {
+    edit = false;
+  } else if (button == CENTER) {
+    switch (activeMenuItem->id) {
+      case ACTION_MENU_SET_ZEROS: 
+        actionSetZeros();
+        break;
+      case ACTION_MENU_SET_RIGHT_LIMIT: 
+        actionSetRightLimit();
+        break;
+      case ACTION_MENU_SET_LEFT_LIMIT: 
+        actionSetLeftLimit();
+        break;
+      case ACTION_MENU_SET_TOP_LIMIT: 
+        actionSetTopLimit();
+        break;
+      case ACTION_MENU_SET_BOTTOM_LIMIT: 
+        actionSetBottomLimit();
+        break;     
+    }
+    edit = false;
+  } else if (button == RESET) {
+    if (activeMenuItem->id == ACTION_MENU_DEFAULTS) {
+      actionSetBottomLimit();       
+    }
     edit = false;
   }
 }
@@ -125,7 +273,7 @@ menuItem* findNext(menuItem *item) {
 }
 
 menuItem* findFirstChild(menuItem *item) {
-  if (activeMenuItem->type != ITEM_MENU_GROUP) {
+  if (activeMenuItem->type != ITEM_TYPE_MENU_GROUP) {
     Serial.print(F("ERROR: finding child of not group "));   
     Serial.println(item->id); 
     return;
@@ -141,7 +289,7 @@ menuItem* findFirstChild(menuItem *item) {
 
 void drawScreen() {
   Serial.print(F("drawScreen: "));
-  if (activeMenuItem->type == ITEM_SCREEN){  
+  if (activeMenuItem->type == ITEM_TYPE_SCREEN){  
     if (activeMenuItem->id == SCREEN_TELEMENTRY_1) {
       drawTelemetry1();
     }
@@ -164,15 +312,15 @@ void navigate (int button) {
   } else if (button == DOWN) {
     activeMenuItem = findNext(activeMenuItem);    
   } else if (button == CENTER) {
-    if (activeMenuItem->type == ITEM_MENU_SETTING) {
+    if (activeMenuItem->type == ITEM_TYPE_MENU_SETTING || activeMenuItem->type == ITEM_TYPE_ACTION) {
       edit = true; 
-    } else if (activeMenuItem->type == ITEM_MENU_GROUP) {
+    } else if (activeMenuItem->type == ITEM_TYPE_MENU_GROUP) {
       activeMenuItem = findFirstChild(activeMenuItem);
     }
   }
-  if (activeMenuItem->type == ITEM_SCREEN){
+  if (activeMenuItem->type == ITEM_TYPE_SCREEN){
     drawScreen();
-  } else if (activeMenuItem->type == ITEM_MENU_SETTING) {
+  } else if (activeMenuItem->type == ITEM_TYPE_MENU_SETTING) {
     currentSettingValue = getSettingValue(activeMenuItem->id); 
   }
 }
@@ -181,35 +329,22 @@ void buttonPresed(int button) {
   Serial.print(F("Button pressed: "));
   Serial.println(button);
   if (edit) {
-    buttonPressedEditMode(button);
+    if (activeMenuItem->type == ITEM_TYPE_MENU_SETTING) {
+      buttonPressedEditModeItem(button);
+    } else if (activeMenuItem->type == ITEM_TYPE_ACTION) {
+      buttonPressedEditModeAction(button);
+    }
   } else {
     navigate(button);
   }
   redrowMenu();
 }
 
-void setupMenu() {
-  setupButtonsCallback(buttonPresed);
-  addMenuItem(&menuItems[0], ITEM_MENU_TEST_1, GROUP_MENU_SETTINGS, "item_1", ITEM_MENU_SETTING);
-  addMenuItem(&menuItems[1], ITEM_MENU_TEST_2, GROUP_MENU_SETTINGS, "item_2", ITEM_MENU_SETTING);
-  addMenuItem(&menuItems[2], ITEM_MENU_TEST_3, GROUP_MENU_SETTINGS, "item_3", ITEM_MENU_SETTING);
-  addMenuItem(&menuItems[3], GROUP_MENU_SETTINGS, 0, "settings", ITEM_MENU_GROUP);
-  addMenuItem(&menuItems[4], GROUP_MENU_TELEMETRY, 0, "telemetry", ITEM_MENU_GROUP);
-  addMenuItem(&menuItems[5], SCREEN_TELEMENTRY_1, GROUP_MENU_TELEMETRY, "T basic", ITEM_SCREEN);
-
-  activeMenuItem = getById(GROUP_MENU_SETTINGS);
-  redrowMenu();
-}
-
 int getActiveScreen() {
-  if (activeMenuItem->type == ITEM_SCREEN) {
+  if (activeMenuItem->type == ITEM_TYPE_SCREEN) {
     return activeMenuItem->id;
   }
   return -1;
-}
-
-void runMenu() {
-
 }
 
 #endif

@@ -37,6 +37,15 @@ int length(int i) {
   return count;
 }
 
+void showEdit(bool edit) {
+  lcd.setCursor(0,0);
+  if (edit) {
+    lcd.blink();
+  } else {
+    lcd.noBlink();
+  }  
+}
+
 void showSettingsItem(String name, float value, float min, float max, bool edit){
   Serial.println("showSettingsItem ");
   Serial.println(name);  
@@ -56,12 +65,55 @@ void showSettingsItem(String name, float value, float min, float max, bool edit)
   lcd.setCursor(15-length(max) + 1, 1);
   lcd.print(max);
 
-  lcd.setCursor(0,0);
-  if (edit) {
-    lcd.blink();
-  } else {
-    lcd.noBlink();
-  }
+  showEdit(edit);
+}
+
+void showTwoFloatItem(String name, float valueLeft, float valueRight, bool edit){
+  Serial.println("showSettingsItem ");
+  Serial.println(name);  
+  Serial.println(valueLeft);
+  Serial.println(valueRight);
+  Serial.println(edit);
+
+  lcd.clear();
+
+  lcd.setCursor(1, 0);
+  lcd.print(name);
+  lcd.setCursor(1, 1);
+  lcd.print(valueLeft);
+  lcd.setCursor(15-length(valueRight) + 1, 1);
+  lcd.print(valueRight);
+
+  showEdit(edit);
+}
+
+void showSingleFloatItem(String name, float value, bool edit){
+  Serial.println("showSettingsItem ");
+  Serial.println(name);  
+  Serial.println(value);
+  Serial.println(edit);
+
+  lcd.clear();
+
+  lcd.setCursor(1, 0);
+  lcd.print(name);
+  lcd.setCursor(1, 1);
+  lcd.print(value);
+
+  showEdit(edit);
+}
+
+void showEditItem(String name, bool edit){
+  Serial.println("showSettingsItem ");
+  Serial.println(name);  
+  Serial.println(edit);
+
+  lcd.clear();
+
+  lcd.setCursor(1, 0);
+  lcd.print(name);
+
+  showEdit(edit);
 }
 
 void showIntScreen(String name, int value, int left, int right){
