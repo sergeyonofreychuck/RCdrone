@@ -53,7 +53,7 @@ const int ACTION_MENU_SET_RIGHT_LIMIT = 2;
 const int ACTION_MENU_SET_LEFT_LIMIT = 3;
 const int ACTION_MENU_SET_TOP_LIMIT = 4;
 const int ACTION_MENU_SET_BOTTOM_LIMIT = 5;
-const int ACTION_MENU_SET_THUST_MIN = 6;
+const int ACTION_MENU_SET_THRUST_MIN = 6;
 const int ACTION_MENU_SET_THRUST_MAX = 7;
 
 const int ITEM_MENU_RIGHT_SCALE = 8;
@@ -93,30 +93,30 @@ void setupMenu() {
 
   addMenuItem(&menuItems[0], GROUP_MENU_SETTINGS, 0, "Settings", ITEM_TYPE_MENU_GROUP);
 
-  addMenuItem(&menuItems[1], GROUP_MENU_SETUP_ANALOGS, 0, "Setup Analogs", ITEM_TYPE_MENU_GROUP);
+  addMenuItem(&menuItems[1], GROUP_MENU_SETUP_ANALOGS, GROUP_MENU_SETTINGS, "Setup Analogs", ITEM_TYPE_MENU_GROUP);
 
   addMenuItem(&menuItems[2], ACTION_MENU_SET_ZEROS, GROUP_MENU_SETUP_ANALOGS, "Set Zeros", ITEM_TYPE_ACTION);
-  addMenuItem(&menuItems[3], ACTION_MENU_SET_RIGHT_LIMIT, GROUP_MENU_SETUP_ANALOGS, "Set Right Limit", ITEM_TYPE_ACTION);
-  addMenuItem(&menuItems[4], ACTION_MENU_SET_LEFT_LIMIT, GROUP_MENU_SETUP_ANALOGS, "Set Left Limit", ITEM_TYPE_ACTION);
-  addMenuItem(&menuItems[5], ACTION_MENU_SET_TOP_LIMIT, GROUP_MENU_SETUP_ANALOGS, "Set Top Limit", ITEM_TYPE_ACTION);
-  addMenuItem(&menuItems[6], ACTION_MENU_SET_BOTTOM_LIMIT, GROUP_MENU_SETUP_ANALOGS, "Set Bottom Limit", ITEM_TYPE_ACTION);
-  addMenuItem(&menuItems[7], ACTION_MENU_SET_THUST_MIN, GROUP_MENU_SETUP_ANALOGS, "Set Thrust Min", ITEM_TYPE_ACTION);
+  addMenuItem(&menuItems[3], ACTION_MENU_SET_RIGHT_LIMIT, GROUP_MENU_SETUP_ANALOGS, "Set Right Lim", ITEM_TYPE_ACTION);
+  addMenuItem(&menuItems[4], ACTION_MENU_SET_LEFT_LIMIT, GROUP_MENU_SETUP_ANALOGS, "Set Left Lim", ITEM_TYPE_ACTION);
+  addMenuItem(&menuItems[5], ACTION_MENU_SET_TOP_LIMIT, GROUP_MENU_SETUP_ANALOGS, "Set Top Lim", ITEM_TYPE_ACTION);
+  addMenuItem(&menuItems[6], ACTION_MENU_SET_BOTTOM_LIMIT, GROUP_MENU_SETUP_ANALOGS, "Set Bottom Lim", ITEM_TYPE_ACTION);
+  addMenuItem(&menuItems[7], ACTION_MENU_SET_THRUST_MIN, GROUP_MENU_SETUP_ANALOGS, "Set Thrust Min", ITEM_TYPE_ACTION);
   addMenuItem(&menuItems[8], ACTION_MENU_SET_THRUST_MAX, GROUP_MENU_SETUP_ANALOGS, "Set Thrust Max", ITEM_TYPE_ACTION);
 
-  addMenuItem(&menuItems[9], GROUP_MENU_SETUP_RC, 0, "Setup RC", ITEM_TYPE_MENU_GROUP);
+  addMenuItem(&menuItems[9], GROUP_MENU_SETUP_RC, GROUP_MENU_SETTINGS, "Setup RC", ITEM_TYPE_MENU_GROUP);
 
-  addMenuItem(&menuItems[10], ITEM_MENU_RIGHT_SCALE, GROUP_MENU_SETUP_RC, "Right Scale", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[11], ITEM_MENU_LEFT_SCALE, GROUP_MENU_SETUP_RC, "Left Scale", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[12], ITEM_MENU_TOP_SCALE, GROUP_MENU_SETUP_RC, "Top Scale", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[13], ITEM_MENU_BOTTOM_SCALE, GROUP_MENU_SETUP_RC, "Bottom Scale", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[14], ITEM_MENU_THRUST_SCALE, GROUP_MENU_SETUP_RC, "Thrust Scale", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[15], ITEM_MENU_RIGHT_START, GROUP_MENU_SETUP_RC, "Right Start", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[16], ITEM_MENU_LEFT_START, GROUP_MENU_SETUP_RC, "Left Start", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[10], ITEM_MENU_RIGHT_SCALE, GROUP_MENU_SETUP_RC, "R Scale", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[11], ITEM_MENU_LEFT_SCALE, GROUP_MENU_SETUP_RC, "L Scale", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[12], ITEM_MENU_TOP_SCALE, GROUP_MENU_SETUP_RC, "T Scale", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[13], ITEM_MENU_BOTTOM_SCALE, GROUP_MENU_SETUP_RC, "B Scale", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[14], ITEM_MENU_THRUST_SCALE, GROUP_MENU_SETUP_RC, "Th Scale", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[15], ITEM_MENU_RIGHT_START, GROUP_MENU_SETUP_RC, "R Start", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[16], ITEM_MENU_LEFT_START, GROUP_MENU_SETUP_RC, "L Start", ITEM_TYPE_MENU_SETTING);
 
   addMenuItem(&menuItems[17], GROUP_MENU_TELEMETRY, 0, "telemetry", ITEM_TYPE_MENU_GROUP);
   addMenuItem(&menuItems[18], SCREEN_TELEMENTRY_1, GROUP_MENU_TELEMETRY, "T basic", ITEM_TYPE_SCREEN);
 
-  addMenuItem(&menuItems[19], ACTION_MENU_DEFAULTS, GROUP_MENU_SETTINGS, "Reset To Detaults", ITEM_TYPE_ACTION);
+  addMenuItem(&menuItems[19], ACTION_MENU_DEFAULTS, GROUP_MENU_SETTINGS, "Set Detaults", ITEM_TYPE_ACTION);
 
   activeMenuItem = getById(GROUP_MENU_SETTINGS);
   redrowMenu();
@@ -131,37 +131,56 @@ void addMenuItem(struct menuItem *item, int id, int parent, String name, int typ
 
 void redrowMenu() {
   Serial.println("redrowMenu");
+  Serial.println(activeMenuItem->type);
+  Serial.println(activeMenuItem->id);
+
   if (activeMenuItem->type == ITEM_TYPE_MENU_SETTING) {
     RcSetting *setting = getSetting(activeMenuItem->id);
-    showSettingsItem(activeMenuItem->name, currentSettingValue, setting->min, setting->max, edit);
+    showIntSettingsItem(activeMenuItem->name, currentSettingValue, setting->min, setting->max, edit);
   } else if (activeMenuItem->type == ITEM_TYPE_MENU_GROUP) {
     showGroupItem(activeMenuItem->name);
   } else if (activeMenuItem->type == ITEM_TYPE_ACTION) {
     switch (activeMenuItem->id) {
-      case ACTION_MENU_SET_ZEROS:
+      case ACTION_MENU_SET_ZEROS: {
         float currentHorizont = getSettingValue(SETTING_HORIZONTAL_ZERO);
         float currentVertical = getSettingValue(SETTING_VERTICAL_ZERO);
-        showTwoFloatItem(activeMenuItem->name, currentHorizont, currentHorizont, edit);
+        showTwoFloatItem(activeMenuItem->name, currentHorizont, currentVertical, edit);
         break;
-      case ACTION_MENU_SET_RIGHT_LIMIT: 
+      }
+      case ACTION_MENU_SET_RIGHT_LIMIT: {
         float rightLimit = getSettingValue(SETTING_RIGHT_LIMIT);
         showSingleFloatItem(activeMenuItem->name, rightLimit, edit);
         break;
-      case ACTION_MENU_SET_LEFT_LIMIT: 
+      }
+      case ACTION_MENU_SET_LEFT_LIMIT: {
         float leftLimit = getSettingValue(SETTING_LEFT_LIMIT);
         showSingleFloatItem(activeMenuItem->name, leftLimit, edit);
         break;
-      case ACTION_MENU_SET_TOP_LIMIT: 
+      }
+      case ACTION_MENU_SET_TOP_LIMIT: {
         float topLimit = getSettingValue(SETTING_TOP_LIMIT);
         showSingleFloatItem(activeMenuItem->name, topLimit, edit);
         break;
-      case ACTION_MENU_SET_BOTTOM_LIMIT: 
+      }
+      case ACTION_MENU_SET_BOTTOM_LIMIT: {
         float bottomLimit = getSettingValue(SETTING_BOTTOM_LIMIT);
         showSingleFloatItem(activeMenuItem->name, bottomLimit, edit);
         break;
-      case ACTION_MENU_DEFAULTS: 
+      }
+      case ACTION_MENU_SET_THRUST_MIN: {
+      float thrustMin = getSettingValue(SETTING_THRUST_MIN);
+        showSingleFloatItem(activeMenuItem->name, thrustMin, edit);
+        break;
+      }
+      case ACTION_MENU_SET_THRUST_MAX: {
+        float thrustMax = getSettingValue(SETTING_THRUST_MAX);
+        showSingleFloatItem(activeMenuItem->name, thrustMax, edit);
+        break;
+      }
+      case ACTION_MENU_DEFAULTS: { 
         showEditItem(activeMenuItem->name, edit);
         break;
+      }
     }
   }
 }
@@ -207,26 +226,40 @@ void buttonPressedEditModeAction(int button) {
     edit = false;
   } else if (button == CENTER) {
     switch (activeMenuItem->id) {
-      case ACTION_MENU_SET_ZEROS: 
+      case ACTION_MENU_SET_ZEROS: { 
         actionSetZeros();
         break;
-      case ACTION_MENU_SET_RIGHT_LIMIT: 
+      }
+      case ACTION_MENU_SET_RIGHT_LIMIT: {
         actionSetRightLimit();
         break;
-      case ACTION_MENU_SET_LEFT_LIMIT: 
+      }
+      case ACTION_MENU_SET_LEFT_LIMIT: {
         actionSetLeftLimit();
         break;
-      case ACTION_MENU_SET_TOP_LIMIT: 
+      }
+      case ACTION_MENU_SET_TOP_LIMIT: {
         actionSetTopLimit();
         break;
-      case ACTION_MENU_SET_BOTTOM_LIMIT: 
+      }
+      case ACTION_MENU_SET_BOTTOM_LIMIT: {
         actionSetBottomLimit();
         break;     
+      }
+      case ACTION_MENU_SET_THRUST_MIN: {
+        actionSetThrustMin();
+        break;
+      }
+      case ACTION_MENU_SET_THRUST_MAX: {
+        actionSetThrustMax();
+        break;     
+      }
     }
     edit = false;
   } else if (button == RESET) {
     if (activeMenuItem->id == ACTION_MENU_DEFAULTS) {
-      actionSetBottomLimit();       
+        initDefaults();
+        readSettings();    
     }
     edit = false;
   }

@@ -51,11 +51,11 @@ void initSettings() {
   createSetting(&settings[5], SETTING_BOTTOM_LIMIT, 0, 1023, 1, 1023);
   createSetting(&settings[6], SETTING_THRUST_MIN, 0, 1023, 1, 0);
   createSetting(&settings[7], SETTING_THRUST_MAX, 0, 1023, 1, 1023);
-  createSetting(&settings[8], SETTING_RIGHT_SCALE, 0, 100, 10, 1023);
-  createSetting(&settings[9], SETTING_LEFT_SCALE, 0, 100, 10, 1023);
-  createSetting(&settings[10], SETTING_TOP_SCALE, 0, 100, 10, 1023);
-  createSetting(&settings[11], SETTING_BOTTOM_SCALE, 0, 100, 10, 1023);
-  createSetting(&settings[12], SETTING_THRUST_SCALE, 0, 100, 5, 1023);
+  createSetting(&settings[8], SETTING_RIGHT_SCALE, 0, 100, 10, 100);
+  createSetting(&settings[9], SETTING_LEFT_SCALE, 0, 100, 10, 100);
+  createSetting(&settings[10], SETTING_TOP_SCALE, 0, 100, 10, 100);
+  createSetting(&settings[11], SETTING_BOTTOM_SCALE, 0, 100, 10, 100);
+  createSetting(&settings[12], SETTING_THRUST_SCALE, 0, 100, 5, 100);
   createSetting(&settings[13], SETTING_RIGHT_START, 0, 100, 1, 50);
   createSetting(&settings[14], SETTING_LEFT_START, 0, 100, 1, 50);
 }

@@ -68,8 +68,29 @@ void showSettingsItem(String name, float value, float min, float max, bool edit)
   showEdit(edit);
 }
 
-void showTwoFloatItem(String name, float valueLeft, float valueRight, bool edit){
+void showIntSettingsItem(String name, int value, int left, int right, bool edit){
   Serial.println("showSettingsItem ");
+  Serial.println(name);  
+  Serial.println(value);
+  Serial.println(left);
+  Serial.println(right);
+
+  lcd.clear();
+
+  lcd.setCursor(0, 0);
+  lcd.print(name);
+  lcd.setCursor(15-length(value) + 1, 0);
+  lcd.print(value);
+  lcd.setCursor(0, 1);
+  lcd.print(left);
+  lcd.setCursor(15-length(right) + 1, 1);
+  lcd.print(right);
+
+  showEdit(edit);
+}
+
+void showTwoFloatItem(String name, float valueLeft, float valueRight, bool edit){
+  Serial.println("showTwoFloatItem ");
   Serial.println(name);  
   Serial.println(valueLeft);
   Serial.println(valueRight);
@@ -88,7 +109,7 @@ void showTwoFloatItem(String name, float valueLeft, float valueRight, bool edit)
 }
 
 void showSingleFloatItem(String name, float value, bool edit){
-  Serial.println("showSettingsItem ");
+  Serial.println("showSingleFloatItem ");
   Serial.println(name);  
   Serial.println(value);
   Serial.println(edit);
@@ -104,7 +125,7 @@ void showSingleFloatItem(String name, float value, bool edit){
 }
 
 void showEditItem(String name, bool edit){
-  Serial.println("showSettingsItem ");
+  Serial.println("showEditItem ");
   Serial.println(name);  
   Serial.println(edit);
 
