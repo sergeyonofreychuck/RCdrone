@@ -36,8 +36,12 @@ int getActiveScreen();
 //----Top Scale             #Item 1-100; 10; 100
 //----Bottom Scale          #Item 1-100; 10; 100
 //----Thrust Scale          #Item 1-100; 5; 100
-//----Right Start Point     #Item 1-100; 1; 50
-//----Left Start Point      #Item 1-100; 1; 50
+//----Right Shift           #Item -100-100; 1; 0
+//----Left Shift            #Item -100-100; 1; 0
+//----Right Top Limit       #Item 1-100; 5; 100
+//----Right Bottom Limit    #Item 1-100; 5; 100
+//----Left Top Limit        #Item 1-100; 5; 100
+//----Lefft Bottom Limit    #Item 1-100; 5; 100
 //--Reset To Default        #Action
 //Telemetry                 #Group
 //--T Basic                 #Screen
@@ -61,10 +65,14 @@ const int ITEM_MENU_LEFT_SCALE = 9;
 const int ITEM_MENU_TOP_SCALE = 10;
 const int ITEM_MENU_BOTTOM_SCALE = 11;
 const int ITEM_MENU_THRUST_SCALE = 12;
-const int ITEM_MENU_RIGHT_START = 13;
-const int ITEM_MENU_LEFT_START = 14;
+const int ITEM_MENU_RIGHT_SHIFT = 13;
+const int ITEM_MENU_LEFT_SHIFT = 14;
+const int ITEM_MENU_RIGHT_TOP_LIMIT = 15;
+const int ITEM_MENU_RIGHT_BOTTOM_LIMIT = 16;
+const int ITEM_MENU_LEFT_TOP_LIMIT = 17;
+const int ITEM_MENU_LEFT_BOTTOM_LIMIT = 18;
 
-const int ACTION_MENU_DEFAULTS = 15;
+const int ACTION_MENU_DEFAULTS = 19;
 
 const int GROUP_MENU_SETTINGS = 101;
 const int GROUP_MENU_SETUP_ANALOGS = 102;
@@ -81,8 +89,8 @@ struct menuItem {
   int type;
 };
 
-menuItem menuItems[20];
-const int MENU_SIZE = 20;
+menuItem menuItems[24];
+const int MENU_SIZE = 24;
 
 menuItem *activeMenuItem;
 bool edit = false;
@@ -110,8 +118,12 @@ void setupMenu() {
   addMenuItem(&menuItems[12], ITEM_MENU_TOP_SCALE, GROUP_MENU_SETUP_RC, "T Scale", ITEM_TYPE_MENU_SETTING);
   addMenuItem(&menuItems[13], ITEM_MENU_BOTTOM_SCALE, GROUP_MENU_SETUP_RC, "B Scale", ITEM_TYPE_MENU_SETTING);
   addMenuItem(&menuItems[14], ITEM_MENU_THRUST_SCALE, GROUP_MENU_SETUP_RC, "Th Scale", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[15], ITEM_MENU_RIGHT_START, GROUP_MENU_SETUP_RC, "R Start", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[16], ITEM_MENU_LEFT_START, GROUP_MENU_SETUP_RC, "L Start", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[15], ITEM_MENU_RIGHT_SHIFT, GROUP_MENU_SETUP_RC, "R Shift", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[16], ITEM_MENU_LEFT_SHIFT, GROUP_MENU_SETUP_RC, "L Shift", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[13], ITEM_MENU_RIGHT_TOP_LIMIT, GROUP_MENU_SETUP_RC, "R T Limit", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[14], ITEM_MENU_RIGHT_BOTTOM_LIMIT, GROUP_MENU_SETUP_RC, "R B Limit", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[15], ITEM_MENU_LEFT_TOP_LIMIT, GROUP_MENU_SETUP_RC, "L T Limit", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[16], ITEM_MENU_LEFT_BOTTOM_LIMIT, GROUP_MENU_SETUP_RC, "L B Limit", ITEM_TYPE_MENU_SETTING);
 
   addMenuItem(&menuItems[17], GROUP_MENU_TELEMETRY, 0, "telemetry", ITEM_TYPE_MENU_GROUP);
   addMenuItem(&menuItems[18], SCREEN_TELEMENTRY_1, GROUP_MENU_TELEMETRY, "T basic", ITEM_TYPE_SCREEN);
@@ -148,22 +160,22 @@ void redrowMenu() {
         break;
       }
       case ACTION_MENU_SET_RIGHT_LIMIT: {
-        float rightLimit = getSettingValue(SETTING_RIGHT_LIMIT);
+        float rightLimit = getSettingValue(SETTING_RIGHT_CONTROL_LIMIT);
         showSingleFloatItem(activeMenuItem->name, rightLimit, edit);
         break;
       }
       case ACTION_MENU_SET_LEFT_LIMIT: {
-        float leftLimit = getSettingValue(SETTING_LEFT_LIMIT);
+        float leftLimit = getSettingValue(SETTING_LEFT_CONTROL_LIMIT);
         showSingleFloatItem(activeMenuItem->name, leftLimit, edit);
         break;
       }
       case ACTION_MENU_SET_TOP_LIMIT: {
-        float topLimit = getSettingValue(SETTING_TOP_LIMIT);
+        float topLimit = getSettingValue(SETTING_TOP_CONTROL_LIMIT);
         showSingleFloatItem(activeMenuItem->name, topLimit, edit);
         break;
       }
       case ACTION_MENU_SET_BOTTOM_LIMIT: {
-        float bottomLimit = getSettingValue(SETTING_BOTTOM_LIMIT);
+        float bottomLimit = getSettingValue(SETTING_BOTTOM_CONTROL_LIMIT);
         showSingleFloatItem(activeMenuItem->name, bottomLimit, edit);
         break;
       }
@@ -361,6 +373,7 @@ void navigate (int button) {
 void buttonPresed(int button) {
   Serial.print(F("Button pressed: "));
   Serial.println(button);
+
   if (edit) {
     if (activeMenuItem->type == ITEM_TYPE_MENU_SETTING) {
       buttonPressedEditModeItem(button);
