@@ -21,13 +21,20 @@ struct DirControl {
 DirControl DIR_CONTROL;
 
 void readDirControl() {
-  Serial.println("readDirControl");
+  // Serial.println("============");
+  // Serial.println("readDirControl");
+  // Serial.println(RC_ANALOGS.y);
+  // Serial.println(RC_ANALOGS.z);
+  // Serial.println(RC_ANALOGS.t);
+
   float r = 0;
   float l = 0;
   float t = 0;
+  float incl = 0;
+
   if (RC_ANALOGS.y > getSettingValue(SETTING_HORIZONTAL_ZERO)) {
-    Serial.println("1");
-    int incl = mapValue(
+    //Serial.println("==right");
+    incl = mapValue(
       RC_ANALOGS.y,
       getSettingValue(SETTING_HORIZONTAL_ZERO),
       getSettingValue(SETTING_RIGHT_CONTROL_LIMIT),
@@ -36,8 +43,8 @@ void readDirControl() {
     r = -1 * incl;
     l = incl;
   } else {
-    Serial.println("2");
-    int incl = mapValue(
+    //Serial.println("==left");
+    incl = mapValue(
       RC_ANALOGS.y,
       getSettingValue(SETTING_HORIZONTAL_ZERO),
       getSettingValue(SETTING_LEFT_CONTROL_LIMIT),
@@ -46,13 +53,13 @@ void readDirControl() {
     r = incl;
     l = -1 * incl;    
   }
-
-  Serial.println(r);
-  Serial.println(l);
+  // Serial.println("-horizontal");
+  // Serial.println(r);
+  // Serial.println(l);
 
   if (RC_ANALOGS.z > getSettingValue(SETTING_VERTICAL_ZERO)) {
-    Serial.println("3");
-    int incl = mapValue(
+    //Serial.println("==top");
+    incl = mapValue(
       RC_ANALOGS.z,
       getSettingValue(SETTING_VERTICAL_ZERO),
       getSettingValue(SETTING_BOTTOM_CONTROL_LIMIT),
@@ -61,8 +68,8 @@ void readDirControl() {
     r = r+incl;
     l = l+incl;
   } else {
-    Serial.println("4");
-    int incl = mapValue(
+    //Serial.println("==bottom");
+    incl = mapValue(
       RC_ANALOGS.z,
       getSettingValue(SETTING_VERTICAL_ZERO),
       getSettingValue(SETTING_TOP_CONTROL_LIMIT),
@@ -71,17 +78,18 @@ void readDirControl() {
     r = r-incl;
     l = l-incl;
   }
+//  Serial.println("--vertical");
+  // Serial.println(r);
+  // Serial.println(l);
 
-  Serial.println(r);
-  Serial.println(l);
-
-  Serial.println("5");
+//  Serial.println("==shift");
 
   r += getSettingValue(SETTING_RIGHT_SHIFT);
   l += getSettingValue(SETTING_LEFT_SHIFT);
 
-  Serial.println(r);
-  Serial.println(l);
+//  Serial.println("--shift");
+  // Serial.println(r);
+  // Serial.println(l);
 
   t = mapValue(
       RC_ANALOGS.t,
@@ -90,16 +98,16 @@ void readDirControl() {
       getSettingValue(SETTING_THRUST_SCALE)
     );
 
-  Serial.println(t);
+  //Serial.println(t);
 
-  Serial.println("lim");
+//  Serial.println("==lim");
 
   r = applyLimit(r, -1*getSettingValue(SETTING_RIGHT_BOTTOM_LIMIT), getSettingValue(SETTING_RIGHT_TOP_LIMIT));
   l = applyLimit(l, -1*getSettingValue(SETTING_LEFT_BOTTOM_LIMIT), getSettingValue(SETTING_LEFT_TOP_LIMIT));
 
-  Serial.println(r);
-  Serial.println(l);
-  Serial.println(t);
+  // Serial.println(r);
+  // Serial.println(l);
+  // Serial.println(t);
 
   DIR_CONTROL.r = r;
   DIR_CONTROL.l = l;
@@ -108,15 +116,29 @@ void readDirControl() {
 
 float applyLimit(float value, int minLimit, int maxLimit) {
   if (value < minLimit) {
-    value = minLimit;
+    return minLimit;
   }
   if (value > maxLimit) {
-    value = maxLimit;
+    return maxLimit;
   }
+
+  return value;
 }
 
 float mapValue(float value, int min, int max, int scale) {
-  return map(value, min, max, 0, 100)*100/scale;
+  // Serial.println("mapValue");
+  // Serial.print(value);
+  // Serial.print("  ");
+  // Serial.print(min);
+  // Serial.print("  ");
+  // Serial.print(max);
+  // Serial.print("  ");
+  // Serial.print(scale);
+  // Serial.print("  =  ");  
+  // Serial.println(map(value, min, max, 0, 100));
+
+  float f = map(value, min, max, 0, 100)*scale;
+  return f/100;
 }
 
 #endif

@@ -8,7 +8,7 @@
 int loopCounter = 0;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("Setup");
 
   initSettings();
@@ -30,8 +30,9 @@ void loop() {
 
   loopCounter++;
 
-  if (loopCounter%20 == 0) {
+  if (loopCounter%40 == 0) {
     readDirControl();
+    drawScreen();
   }
 
   // Serial.print(F("yControl: "));

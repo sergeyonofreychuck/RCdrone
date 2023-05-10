@@ -62,11 +62,10 @@ void initSettings() {
   createSetting(&settings[12], SETTING_THRUST_SCALE, 0, 100, 5, 100);
   createSetting(&settings[13], SETTING_RIGHT_SHIFT, -100, 100, 1, 0);
   createSetting(&settings[14], SETTING_LEFT_SHIFT, -100, 100, 1, 0);
-  createSetting(&settings[10], SETTING_RIGHT_TOP_LIMIT, 0, 100, 10, 100);
-  createSetting(&settings[11], SETTING_BOTTOM_SCALE, 0, 100, 10, 100);
-  createSetting(&settings[12], SETTING_RIGHT_BOTTOM_LIMIT, 0, 100, 10, 100);
-  createSetting(&settings[13], SETTING_LEFT_TOP_LIMIT, 0, 100, 10, 100);
-  createSetting(&settings[14], SETTING_LEFT_BOTTOM_LIMIT, 0, 100, 10, 100);
+  createSetting(&settings[15], SETTING_RIGHT_TOP_LIMIT, 0, 100, 10, 100);
+  createSetting(&settings[16], SETTING_RIGHT_BOTTOM_LIMIT, 0, 100, 10, 100);
+  createSetting(&settings[17], SETTING_LEFT_TOP_LIMIT, 0, 100, 10, 100);
+  createSetting(&settings[18], SETTING_LEFT_BOTTOM_LIMIT, 0, 100, 10, 100);
 }
 
 void initDefaults() {
@@ -86,8 +85,8 @@ void readSettings() {
 }
 
 RcSetting* getSetting(int id) {
-  Serial.print("getSetting ");
-  Serial.println(id);
+  //Serial.print("getSetting ");
+  //Serial.println(id);
   for (int i = 0; i < SETTINGS_SIZE; i++) {
     RcSetting *current = &settings[i];
     if (current->id == id) {
@@ -99,8 +98,8 @@ RcSetting* getSetting(int id) {
 
 float getSettingValue(int id) {
   RcSetting *setting = getSetting(id);
-  Serial.print("getSettingValue ");
-  Serial.println(setting->value);
+  //Serial.print("getSettingValue ");
+  //Serial.println(setting->value);
   return setting->value;
 }
 

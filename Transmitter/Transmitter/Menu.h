@@ -120,15 +120,15 @@ void setupMenu() {
   addMenuItem(&menuItems[14], ITEM_MENU_THRUST_SCALE, GROUP_MENU_SETUP_RC, "Th Scale", ITEM_TYPE_MENU_SETTING);
   addMenuItem(&menuItems[15], ITEM_MENU_RIGHT_SHIFT, GROUP_MENU_SETUP_RC, "R Shift", ITEM_TYPE_MENU_SETTING);
   addMenuItem(&menuItems[16], ITEM_MENU_LEFT_SHIFT, GROUP_MENU_SETUP_RC, "L Shift", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[13], ITEM_MENU_RIGHT_TOP_LIMIT, GROUP_MENU_SETUP_RC, "R T Limit", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[14], ITEM_MENU_RIGHT_BOTTOM_LIMIT, GROUP_MENU_SETUP_RC, "R B Limit", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[15], ITEM_MENU_LEFT_TOP_LIMIT, GROUP_MENU_SETUP_RC, "L T Limit", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[16], ITEM_MENU_LEFT_BOTTOM_LIMIT, GROUP_MENU_SETUP_RC, "L B Limit", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[17], ITEM_MENU_RIGHT_TOP_LIMIT, GROUP_MENU_SETUP_RC, "R T Limit", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[18], ITEM_MENU_RIGHT_BOTTOM_LIMIT, GROUP_MENU_SETUP_RC, "R B Limit", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[19], ITEM_MENU_LEFT_TOP_LIMIT, GROUP_MENU_SETUP_RC, "L T Limit", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[20], ITEM_MENU_LEFT_BOTTOM_LIMIT, GROUP_MENU_SETUP_RC, "L B Limit", ITEM_TYPE_MENU_SETTING);
 
-  addMenuItem(&menuItems[17], GROUP_MENU_TELEMETRY, 0, "telemetry", ITEM_TYPE_MENU_GROUP);
-  addMenuItem(&menuItems[18], SCREEN_TELEMENTRY_1, GROUP_MENU_TELEMETRY, "T basic", ITEM_TYPE_SCREEN);
+  addMenuItem(&menuItems[21], GROUP_MENU_TELEMETRY, 0, "telemetry", ITEM_TYPE_MENU_GROUP);
+  addMenuItem(&menuItems[22], SCREEN_TELEMENTRY_1, GROUP_MENU_TELEMETRY, "T basic", ITEM_TYPE_SCREEN);
 
-  addMenuItem(&menuItems[19], ACTION_MENU_DEFAULTS, GROUP_MENU_SETTINGS, "Set Detaults", ITEM_TYPE_ACTION);
+  addMenuItem(&menuItems[23], ACTION_MENU_DEFAULTS, GROUP_MENU_SETTINGS, "Set Detaults", ITEM_TYPE_ACTION);
 
   activeMenuItem = getById(GROUP_MENU_SETTINGS);
   redrowMenu();
@@ -333,8 +333,8 @@ menuItem* findFirstChild(menuItem *item) {
 }
 
 void drawScreen() {
-  Serial.print(F("drawScreen: "));
   if (activeMenuItem->type == ITEM_TYPE_SCREEN){  
+    Serial.print(F("drawScreen: "));
     if (activeMenuItem->id == SCREEN_TELEMENTRY_1) {
       drawTelemetry1();
     }
