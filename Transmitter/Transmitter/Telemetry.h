@@ -9,7 +9,7 @@ int telemetryRightFlap = 11;
 int telemetryLeftFlap = -5;
 
 void drawTelemetry1() {
-  showIntScreen("T basic", DIR_CONTROL.t, DIR_CONTROL.l, DIR_CONTROL.r);
+  showIntScreen("T basic", USER_CONTROL.thrust, USER_CONTROL.horizontal, USER_CONTROL.vertical);
 }
 
 #endif
