@@ -116,11 +116,13 @@ void readDirControl() {
 
   if (USER_CONTROL.horizontal > 0) { //right
     incl = USER_CONTROL.horizontal * getSettingValue(SETTING_RIGHT_SCALE) / 100;
+    r += incl;
   } else { // left
     incl = USER_CONTROL.horizontal * getSettingValue(SETTING_LEFT_SCALE) / 100;
+    l = -1* incl;
   }
-  r = incl;
-  l = -1* incl;
+  // r = incl;
+  // l = -1* incl;
 
   // Serial.println("-horizontal");
   // Serial.println(r);
