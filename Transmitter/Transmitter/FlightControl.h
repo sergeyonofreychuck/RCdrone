@@ -49,7 +49,7 @@ void readUserControl() {
   float thrust = 0;
 
   if (RC_ANALOGS.y < getSettingValue(SETTING_HORIZONTAL_ZERO)) {
-    Serial.println("==right");
+    //Serial.println("==right");
     USER_CONTROL.horizontal = map(
       RC_ANALOGS.y, 
       getSettingValue(SETTING_HORIZONTAL_ZERO), 
@@ -57,7 +57,7 @@ void readUserControl() {
       0, 
       100);
   } else {
-    Serial.println("==left");
+    //Serial.println("==left");
     USER_CONTROL.horizontal = map(
       RC_ANALOGS.y, 
       getSettingValue(SETTING_HORIZONTAL_ZERO), 
@@ -103,9 +103,11 @@ void readUserControl() {
 }
 
 void readDirControl() {
-  // Serial.println("readDirControl");
-  // Serial.println("-horizontal");
-  // Serial.println(USER_CONTROL.vertical);
+  // Serial.print("readDirControl  ");
+  // Serial.print(USER_CONTROL.horizontal);
+  // Serial.print("  ");
+  // Serial.print(USER_CONTROL.vertical);
+  // Serial.print("  ");
   // Serial.println(USER_CONTROL.thrust);
 
   float r = 0;
@@ -135,22 +137,25 @@ void readDirControl() {
   // Serial.println(r);
   // Serial.println(l);
 
-  // Serial.println("==shift");
   r += getSettingValue(SETTING_RIGHT_SHIFT);
   l += getSettingValue(SETTING_LEFT_SHIFT);
 
-  // Serial.println("==lim");
+  // Serial.println("==shift");
+  // Serial.println(r);
+  // Serial.println(l);
 
   r = applyLimit(r, -1*getSettingValue(SETTING_RIGHT_BOTTOM_LIMIT), getSettingValue(SETTING_RIGHT_TOP_LIMIT));
   l = applyLimit(l, -1*getSettingValue(SETTING_LEFT_BOTTOM_LIMIT), getSettingValue(SETTING_LEFT_TOP_LIMIT));
 
+  // Serial.println("==lim");
   // Serial.println(r);
   // Serial.println(l);
-  // Serial.println(t);
 
   FLIGHT_DIR_CONTROL.r = r;
   FLIGHT_DIR_CONTROL.l = l;
   FLIGHT_DIR_CONTROL.t = USER_CONTROL.thrust * getSettingValue(SETTING_THRUST_SCALE) / 100;
+
+  // Serial.println(FLIGHT_DIR_CONTROL.t);
 }
 
 float applyLimit(float value, int minLimit, int maxLimit) {
