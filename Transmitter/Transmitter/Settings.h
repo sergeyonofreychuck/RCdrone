@@ -49,10 +49,10 @@ void createSetting(struct RcSetting *s, int id, float min, float max, float step
 void initSettings() {
   createSetting(&settings[0], SETTING_HORIZONTAL_ZERO, 0, 1023, 1, 511);
   createSetting(&settings[1], SETTING_VERTICAL_ZERO, 0, 1023, 1, 511);
-  createSetting(&settings[2], SETTING_RIGHT_CONTROL_LIMIT, 0, 1023, 1, 1023);
-  createSetting(&settings[3], SETTING_LEFT_CONTROL_LIMIT, 0, 1023, 1, 0);
-  createSetting(&settings[4], SETTING_TOP_CONTROL_LIMIT, 0, 1023, 1, 0);
-  createSetting(&settings[5], SETTING_BOTTOM_CONTROL_LIMIT, 0, 1023, 1, 1023);
+  createSetting(&settings[2], SETTING_RIGHT_CONTROL_LIMIT, 0, 1023, 1, 0);
+  createSetting(&settings[3], SETTING_LEFT_CONTROL_LIMIT, 0, 1023, 1, 1023);
+  createSetting(&settings[4], SETTING_TOP_CONTROL_LIMIT, 0, 1023, 1, 1023);
+  createSetting(&settings[5], SETTING_BOTTOM_CONTROL_LIMIT, 0, 1023, 1, 0);
   createSetting(&settings[6], SETTING_THRUST_MIN, 0, 1023, 1, 0);
   createSetting(&settings[7], SETTING_THRUST_MAX, 0, 1023, 1, 1023);
   createSetting(&settings[8], SETTING_RIGHT_SCALE, 0, 100, 10, 100);
@@ -98,8 +98,8 @@ RcSetting* getSetting(int id) {
 
 float getSettingValue(int id) {
   RcSetting *setting = getSetting(id);
-  //Serial.print("getSettingValue ");
-  //Serial.println(setting->value);
+  Serial.print("getSettingValue ");
+  Serial.println(setting->value);
   return setting->value;
 }
 

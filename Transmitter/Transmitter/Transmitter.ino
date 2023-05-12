@@ -31,7 +31,8 @@ void loop() {
   loopCounter++;
 
   if (loopCounter%40 == 0) {
-    readDirControl();
+    readUserControl();
+    //readDirControl();
     drawScreen();
   }
 

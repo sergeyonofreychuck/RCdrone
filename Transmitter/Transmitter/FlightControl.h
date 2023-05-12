@@ -41,7 +41,7 @@ void constructDirControl() {
 
 void readUserControl() {
   // Serial.println("============");
-  // Serial.println("readDirControl");
+  // Serial.println("readUserControl");
   // Serial.println(RC_ANALOGS.y);
   // Serial.println(RC_ANALOGS.z);
   // Serial.println(RC_ANALOGS.t);
@@ -49,11 +49,21 @@ void readUserControl() {
   float thrust = 0;
 
   if (RC_ANALOGS.y < getSettingValue(SETTING_HORIZONTAL_ZERO)) {
-    //Serial.println("==right");
-    USER_CONTROL.horizontal = map(RC_ANALOGS.y, SETTING_HORIZONTAL_ZERO, SETTING_RIGHT_CONTROL_LIMIT, 0, 100);
+    Serial.println("==right");
+    USER_CONTROL.horizontal = map(
+      RC_ANALOGS.y, 
+      getSettingValue(SETTING_HORIZONTAL_ZERO), 
+      getSettingValue(SETTING_RIGHT_CONTROL_LIMIT), 
+      0, 
+      100);
   } else {
-    //Serial.println("==left");
-    USER_CONTROL.horizontal = map(RC_ANALOGS.y, SETTING_HORIZONTAL_ZERO, SETTING_LEFT_CONTROL_LIMIT, 0, 100);
+    Serial.println("==left");
+    USER_CONTROL.horizontal = map(
+      RC_ANALOGS.y, 
+      getSettingValue(SETTING_HORIZONTAL_ZERO), 
+      getSettingValue(SETTING_LEFT_CONTROL_LIMIT), 
+      0, 
+      100)*-1;
   }  
 
   // Serial.println("-horizontal");
@@ -61,16 +71,32 @@ void readUserControl() {
 
 
   if (RC_ANALOGS.z > getSettingValue(SETTING_VERTICAL_ZERO)) {
-    //Serial.println("==top");
-    USER_CONTROL.horizontal = map(RC_ANALOGS.z, SETTING_VERTICAL_ZERO, SETTING_BOTTOM_CONTROL_LIMIT, 0, 100);
+    // Serial.println("==top");
+    USER_CONTROL.vertical = map(
+      RC_ANALOGS.z, 
+      getSettingValue(SETTING_VERTICAL_ZERO), 
+      getSettingValue(SETTING_TOP_CONTROL_LIMIT), 
+      0, 
+      100);
   } else {
-    //Serial.println("==bottom");
-    USER_CONTROL.horizontal = map(RC_ANALOGS.z, SETTING_VERTICAL_ZERO, SETTING_TOP_CONTROL_LIMIT, 0, 100);
+    // Serial.println("==bottom");
+    USER_CONTROL.vertical = map(
+      RC_ANALOGS.z, 
+      getSettingValue(SETTING_VERTICAL_ZERO), 
+      getSettingValue(SETTING_BOTTOM_CONTROL_LIMIT), 
+      0, 
+      100)*-1;
   }
 
-  //  Serial.println("--vertical");
+  // Serial.println("--vertical");
   // Serial.println(USER_CONTROL.vertical);
-  USER_CONTROL.thrust = map(RC_ANALOGS.y, SETTING_THRUST_MIN, SETTING_THRUST_MAX, 0, 100);
+
+  USER_CONTROL.thrust = map(
+    RC_ANALOGS.t, 
+    getSettingValue(SETTING_THRUST_MIN), 
+    getSettingValue(SETTING_THRUST_MAX), 
+    0, 
+    100);
 
   // Serial.println("--thrust");
   // Serial.println(USER_CONTROL.thrust);
@@ -78,6 +104,9 @@ void readUserControl() {
 
 void readDirControl() {
   // Serial.println("readDirControl");
+  // Serial.println("-horizontal");
+  // Serial.println(USER_CONTROL.vertical);
+  // Serial.println(USER_CONTROL.thrust);
 
   float r = 0;
   float l = 0;
