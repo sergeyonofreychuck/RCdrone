@@ -98,8 +98,8 @@ RcSetting* getSetting(int id) {
 
 float getSettingValue(int id) {
   RcSetting *setting = getSetting(id);
-  Serial.print("getSettingValue ");
-  Serial.println(setting->value);
+  // Serial.print("getSettingValue ");
+  // Serial.println(setting->value);
   return setting->value;
 }
 

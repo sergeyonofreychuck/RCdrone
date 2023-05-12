@@ -103,6 +103,7 @@ void readUserControl() {
 }
 
 void readDirControl() {
+  readUserControl();
   // Serial.print("readDirControl  ");
   // Serial.print(USER_CONTROL.horizontal);
   // Serial.print("  ");
@@ -121,8 +122,6 @@ void readDirControl() {
     incl = USER_CONTROL.horizontal * getSettingValue(SETTING_LEFT_SCALE) / 100;
     l = -1* incl;
   }
-  // r = incl;
-  // l = -1* incl;
 
   // Serial.println("-horizontal");
   // Serial.println(r);

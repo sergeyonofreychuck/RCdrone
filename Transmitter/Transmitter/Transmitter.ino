@@ -4,12 +4,15 @@
 #include "Telemetry.h"
 #include "RcInputs.h"
 #include "FlightControl.h"
+#include "Radio.h"
 
 int loopCounter = 0;
 
 void setup() {
   Serial.begin(115200);
   Serial.println("Setup");
+
+  pinMode(35,OUTPUT);
 
   initSettings();
   //initDefaults();
@@ -19,6 +22,8 @@ void setup() {
 
   setupUserInput();
   setupMenu();
+
+  setupRadio();
 
   loopCounter = 0;
 }
@@ -31,10 +36,11 @@ void loop() {
   loopCounter++;
 
   if (loopCounter%40 == 0) {
-    readUserControl();
     readDirControl();
     drawScreen();
   }
+
+  radioTest();
 
   // Serial.print(F("yControl: "));
   // Serial.println(thrustControl);
