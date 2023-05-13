@@ -17,18 +17,26 @@ void setupRadio() {
   radio.openReadingPipe(1, radio_pipe);  // using pipe 1
 }
 
-void writeRadioWithAck(struct FlightControl *payload, struct FlightControl *ack) {
+void writeRadioWithAck(FlightControl *payload, FlightControl *ack) {
     
-  bool result = radio.write(&payload, sizeof(FlightControl));
+  bool result = radio.write(payload, sizeof(FlightControl));
 
   Serial.print("Payload Write ");
   Serial.println(result);
 
   if (radio.available()) {  // is there an ACK payload? grab the pipe number that received it
-        radio.read(ack, sizeof(FlightControl));
-        Serial.print("Ack received ");
+    radio.read(ack, sizeof(FlightControl));
+    Serial.println("Ack received ");
+    delay(100);
+    digitalWrite(37,HIGH);
+    delay(100);
+    digitalWrite(37,LOW);
   } else {
     Serial.println("Recieved: an empty ACK packet");  // empty ACK packet received
+    delay(100);
+    digitalWrite(35,HIGH);
+    delay(100);
+    digitalWrite(35,LOW);
   }
 }
 
@@ -56,14 +64,19 @@ void radioTest()
         Serial.print(F(" bytes"));
         Serial.print(F(": "));
         Serial.println(received.ch1);    // print incoming message
+
+        delay(100);
+        digitalWrite(37,HIGH);
+        delay(100);
+        digitalWrite(37,LOW);
   } else {
     Serial.println(F(" Recieved: an empty ACK packet"));  // empty ACK packet received
-  }
 
-  delay(100);
-  digitalWrite(35,HIGH);
-  delay(100);
-  digitalWrite(35,LOW);
+    delay(100);
+    digitalWrite(35,HIGH);
+    delay(100);
+    digitalWrite(35,LOW);
+  }
 }
 
 #endif

@@ -8,6 +8,7 @@ void readUserControl();
 const int FLIGHT_CONTROL_TYPE_DIRECTION = 0;
 
 struct FlightControl {
+  int id;
   int type;
   int val1;
   int val2;
@@ -29,9 +30,11 @@ struct UserControl {
 
 FlightDirControl FLIGHT_DIR_CONTROL;
 FlightControl FLIGHT_CONTROL_STRUCT;
+FlightControl FLIGHT_CONTROL_ACK;
 UserControl USER_CONTROL;
 
 void constructDirControl() {
+  FLIGHT_CONTROL_STRUCT.id++;
   FLIGHT_CONTROL_STRUCT.type = FLIGHT_CONTROL_TYPE_DIRECTION;
   FLIGHT_CONTROL_STRUCT.val1 = FLIGHT_DIR_CONTROL.r;
   FLIGHT_CONTROL_STRUCT.val2 = FLIGHT_DIR_CONTROL.l;
