@@ -21,12 +21,13 @@ void writeRadioWithAck(FlightControl *payload, FlightControl *ack) {
     
   bool result = radio.write(payload, sizeof(FlightControl));
 
-  Serial.print("Payload Write ");
-  Serial.println(result);
+  //Serial.print("Payload Write ");
+  //Serial.println(result);
 
   if (radio.available()) {  // is there an ACK payload? grab the pipe number that received it
     radio.read(ack, sizeof(FlightControl));
-    Serial.println("Ack received ");
+    Serial.print("Ack received ");
+    Serial.println(FLIGHT_CONTROL_ACK.id);
     delay(100);
     digitalWrite(37,HIGH);
     delay(100);

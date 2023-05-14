@@ -9,7 +9,6 @@
 #include "FlightControl.h"
 
 const uint64_t pipeIn = 0xE8E8F0F0E1LL;     //Remember that this code is the same as in the transmitter
-//RF24 radio(4, 10);  //CSN and CE pins
 RF24 radio(10, 4);  //CSN and CE pins
 
 int prevId = 0;
@@ -51,8 +50,8 @@ void communicateWithTransmitter()
   if (prevId != RECEIVED_FLIGHT_CONTROL.id) {
     prevId = RECEIVED_FLIGHT_CONTROL.id;
     last_update = millis();
-    Serial.println("Received: ");
-    printFlightControl(&RECEIVED_FLIGHT_CONTROL);
+    // Serial.println("Received: ");
+    // printFlightControl(&RECEIVED_FLIGHT_CONTROL);
     // Serial.println("Acc: ");
     // printFlightControl(&ACK_FLIGHT_CONTROL);
     digitalWrite(7,HIGH);
