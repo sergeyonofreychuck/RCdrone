@@ -3,7 +3,7 @@
 
 updateBatteryState() {
   int powerVal = analogRead(A7);
-  int percentage = map(powerVal, 696 ,975, 0, 100);
+  int percentage = map(powerVal, 714 ,1000, 0, 100);
   Serial.print("power: "); 
   Serial.println(powerVal); 
   Serial.println(percentage); 

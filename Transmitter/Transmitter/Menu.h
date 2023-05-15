@@ -31,17 +31,20 @@ int getActiveScreen();
 //----Set Thrust Min        #Action; 0
 //----Set Thrust Max        #Action; 1023
 //--Setup RC                #Group
-//----Right Scale           #Item 1-100; 10; 100
-//----Left Scale            #Item 1-100; 10; 100 
-//----Top Scale             #Item 1-100; 10; 100
-//----Bottom Scale          #Item 1-100; 10; 100
-//----Thrust Scale          #Item 1-100; 5; 100
-//----Right Shift           #Item -100-100; 1; 0
-//----Left Shift            #Item -100-100; 1; 0
-//----Right Top Limit       #Item 1-100; 5; 100
-//----Right Bottom Limit    #Item 1-100; 5; 100
-//----Left Top Limit        #Item 1-100; 5; 100
-//----Lefft Bottom Limit    #Item 1-100; 5; 100
+//----Scales                #Group
+//------Right Scale         #Item 1-100; 10; 100
+//------Left Scale          #Item 1-100; 10; 100 
+//------Top Scale           #Item 1-100; 10; 100
+//------Bottom Scale        #Item 1-100; 10; 100
+//------Thrust Scale        #Item 1-100; 5; 100
+//----Shifts                #Group
+//------Right Shift         #Item -100-100; 1; 0
+//------Left Shift          #Item -100-100; 1; 0
+//----Limits                #Group
+//------Right Top Limit       #Item 1-100; 5; 100
+//------Right Bottom Limit    #Item 1-100; 5; 100
+//------Left Top Limit        #Item 1-100; 5; 100
+//------Lefft Bottom Limit    #Item 1-100; 5; 100
 //--Reset To Default        #Action
 //Telemetry                 #Group
 //--T Basic                 #Screen
@@ -78,8 +81,12 @@ const int GROUP_MENU_SETTINGS = 101;
 const int GROUP_MENU_SETUP_ANALOGS = 102;
 const int GROUP_MENU_SETUP_RC = 103;
 const int GROUP_MENU_TELEMETRY = 104;
+const int GROUP_MENU_SETUP_SCALES = 105;
+const int GROUP_MENU_SETUP_SHIFTS = 106;
+const int GROUP_MENU_SETUP_LIMITS = 107;
 
 const int SCREEN_TELEMENTRY_1 = 201;
+const int SCREEN_TELEMENTRY_2 = 202;
 
 
 struct menuItem {
@@ -89,8 +96,8 @@ struct menuItem {
   int type;
 };
 
-menuItem menuItems[24];
-const int MENU_SIZE = 24;
+menuItem menuItems[28];
+const int MENU_SIZE = 28;
 
 menuItem *activeMenuItem;
 bool edit = false;
@@ -113,20 +120,31 @@ void setupMenu() {
 
   addMenuItem(&menuItems[9], GROUP_MENU_SETUP_RC, GROUP_MENU_SETTINGS, "Setup RC", ITEM_TYPE_MENU_GROUP);
 
-  addMenuItem(&menuItems[10], ITEM_MENU_RIGHT_SCALE, GROUP_MENU_SETUP_RC, "R Scale", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[11], ITEM_MENU_LEFT_SCALE, GROUP_MENU_SETUP_RC, "L Scale", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[12], ITEM_MENU_TOP_SCALE, GROUP_MENU_SETUP_RC, "T Scale", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[13], ITEM_MENU_BOTTOM_SCALE, GROUP_MENU_SETUP_RC, "B Scale", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[14], ITEM_MENU_THRUST_SCALE, GROUP_MENU_SETUP_RC, "Th Scale", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[15], ITEM_MENU_RIGHT_SHIFT, GROUP_MENU_SETUP_RC, "R Shift", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[16], ITEM_MENU_LEFT_SHIFT, GROUP_MENU_SETUP_RC, "L Shift", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[17], ITEM_MENU_RIGHT_TOP_LIMIT, GROUP_MENU_SETUP_RC, "R T Limit", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[18], ITEM_MENU_RIGHT_BOTTOM_LIMIT, GROUP_MENU_SETUP_RC, "R B Limit", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[19], ITEM_MENU_LEFT_TOP_LIMIT, GROUP_MENU_SETUP_RC, "L T Limit", ITEM_TYPE_MENU_SETTING);
-  addMenuItem(&menuItems[20], ITEM_MENU_LEFT_BOTTOM_LIMIT, GROUP_MENU_SETUP_RC, "L B Limit", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[9], GROUP_MENU_SETUP_RC, GROUP_MENU_SETTINGS, "Setup RC", ITEM_TYPE_MENU_GROUP);
+
+  addMenuItem(&menuItems[24], GROUP_MENU_SETUP_SCALES, GROUP_MENU_SETUP_RC, "Scales", ITEM_TYPE_MENU_GROUP);
+
+  addMenuItem(&menuItems[10], ITEM_MENU_RIGHT_SCALE, GROUP_MENU_SETUP_SCALES, "R Scale", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[11], ITEM_MENU_LEFT_SCALE, GROUP_MENU_SETUP_SCALES, "L Scale", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[12], ITEM_MENU_TOP_SCALE, GROUP_MENU_SETUP_SCALES, "T Scale", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[13], ITEM_MENU_BOTTOM_SCALE, GROUP_MENU_SETUP_SCALES, "B Scale", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[14], ITEM_MENU_THRUST_SCALE, GROUP_MENU_SETUP_SCALES, "Th Scale", ITEM_TYPE_MENU_SETTING);
+
+  addMenuItem(&menuItems[25], GROUP_MENU_SETUP_SHIFTS, GROUP_MENU_SETUP_RC, "Shifts", ITEM_TYPE_MENU_GROUP);
+
+  addMenuItem(&menuItems[15], ITEM_MENU_RIGHT_SHIFT, GROUP_MENU_SETUP_SHIFTS, "R Shift", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[16], ITEM_MENU_LEFT_SHIFT, GROUP_MENU_SETUP_SHIFTS, "L Shift", ITEM_TYPE_MENU_SETTING);
+
+  addMenuItem(&menuItems[26], GROUP_MENU_SETUP_LIMITS, GROUP_MENU_SETUP_RC, "Limits", ITEM_TYPE_MENU_GROUP);
+
+  addMenuItem(&menuItems[17], ITEM_MENU_RIGHT_TOP_LIMIT, GROUP_MENU_SETUP_LIMITS, "R T Limit", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[18], ITEM_MENU_RIGHT_BOTTOM_LIMIT, GROUP_MENU_SETUP_LIMITS, "R B Limit", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[19], ITEM_MENU_LEFT_TOP_LIMIT, GROUP_MENU_SETUP_LIMITS, "L T Limit", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[20], ITEM_MENU_LEFT_BOTTOM_LIMIT, GROUP_MENU_SETUP_LIMITS, "L B Limit", ITEM_TYPE_MENU_SETTING);
 
   addMenuItem(&menuItems[21], GROUP_MENU_TELEMETRY, 0, "Telemetry", ITEM_TYPE_MENU_GROUP);
-  addMenuItem(&menuItems[22], SCREEN_TELEMENTRY_1, GROUP_MENU_TELEMETRY, "T basic", ITEM_TYPE_SCREEN);
+  addMenuItem(&menuItems[22], SCREEN_TELEMENTRY_1, GROUP_MENU_TELEMETRY, "T Basic", ITEM_TYPE_SCREEN);
+  addMenuItem(&menuItems[22], SCREEN_TELEMENTRY_2, GROUP_MENU_TELEMETRY, "RC", ITEM_TYPE_SCREEN);
 
   addMenuItem(&menuItems[23], ACTION_MENU_DEFAULTS, GROUP_MENU_SETTINGS, "Set Detaults", ITEM_TYPE_ACTION);
 
@@ -337,6 +355,8 @@ void drawScreen() {
     //Serial.print(F("drawScreen: "));
     if (activeMenuItem->id == SCREEN_TELEMENTRY_1) {
       drawTelemetry1();
+    } else if (activeMenuItem->id == SCREEN_TELEMENTRY_2) {
+      drawTelemetry2();
     }
   } 
 }
