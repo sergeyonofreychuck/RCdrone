@@ -5,8 +5,8 @@ struct RcAnalogs {
   int y;
   int z;
   int t;
-  float leftClick;
-  float rightClick;
+  int leftClick;
+  int rightClick;
 };
 
 RcAnalogs RC_ANALOGS;

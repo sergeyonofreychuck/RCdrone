@@ -39,7 +39,12 @@ void constructDirControl() {
   FLIGHT_CONTROL_STRUCT.val1 = FLIGHT_DIR_CONTROL.r;
   FLIGHT_CONTROL_STRUCT.val2 = FLIGHT_DIR_CONTROL.l;
   FLIGHT_CONTROL_STRUCT.val3 = FLIGHT_DIR_CONTROL.t;
-  FLIGHT_CONTROL_STRUCT.val4 = 0;
+
+  if (getSettingValue(SETTING_CLICKS_TO_STOP) == 1) {
+    FLIGHT_CONTROL_STRUCT.val4 = RC_ANALOGS.leftClick || RC_ANALOGS.rightClick;  
+  } else {
+    FLIGHT_CONTROL_STRUCT.val4 = RC_ANALOGS.leftClick && RC_ANALOGS.rightClick;  
+  }
 }
 
 void readUserControl() {
