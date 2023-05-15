@@ -2,6 +2,7 @@
 #include "FlightControl.h"
 #include "FlightHardware.h"
 #include "PowerControl.h"
+#include "LedManager.h"
 
 // 8 - red LED
 // 7 - green LED
@@ -17,21 +18,15 @@ void setup()
   Serial.begin(115200);
   Serial.println("Setup");
 
-  pinMode(7,OUTPUT);
-  pinMode(8,OUTPUT);
-  digitalWrite(7,HIGH);
-  digitalWrite(8,HIGH);
-  delay(1000);
-  digitalWrite(7,LOW);
-  digitalWrite(8,LOW);
+  setupLeds();
 
   initFlightControl();
   constructFlightDirControl();
+  setupServos();
   updateServos();
   updateMotor();
 
   setupRadio();
-  setupServos();
 
   updateBatteryState();
 }
@@ -64,6 +59,7 @@ void loop_10ms() {
   constructFlightDirControl();
   updateServos();
   updateMotor();
+  updateLeds();
 }
 
 void loop_20ms() {

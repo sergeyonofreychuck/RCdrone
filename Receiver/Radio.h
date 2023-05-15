@@ -14,8 +14,7 @@ RF24 radio(10, 4);  //CSN and CE pins
 int prevId = 0;
 
 int prev = 0;
-unsigned long last_update = 0;
-unsigned long last_Time = 0;
+unsigned long last_radio_update = 0;
 
 void setupRadio()
 { 
@@ -49,23 +48,11 @@ void communicateWithTransmitter()
 
   if (prevId != RECEIVED_FLIGHT_CONTROL.id) {
     prevId = RECEIVED_FLIGHT_CONTROL.id;
-    last_update = millis();
+    last_radio_update = millis();
     // Serial.println("Received: ");
     // printFlightControl(&RECEIVED_FLIGHT_CONTROL);
     // Serial.println("Acc: ");
     // printFlightControl(&ACK_FLIGHT_CONTROL);
-    digitalWrite(7,HIGH);
-  }
-
-  if (millis() - last_update > 100) {
-    digitalWrite(7,LOW);    
-  }
-  
-  if (millis() - last_update > 3000) {
-    FLIGHT_DIR_CONTROL.stop = 1;
-    digitalWrite(8,HIGH);
-  } else {
-    digitalWrite(8,LOW);
   }
 }
 
