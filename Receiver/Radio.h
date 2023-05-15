@@ -61,7 +61,8 @@ void communicateWithTransmitter()
     digitalWrite(7,LOW);    
   }
   
-  if (millis() - last_update > 2000) {
+  if (millis() - last_update > 3000) {
+    FLIGHT_DIR_CONTROL.stop = 1;
     digitalWrite(8,HIGH);
   } else {
     digitalWrite(8,LOW);

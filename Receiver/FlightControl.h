@@ -16,6 +16,7 @@ struct FlightDirControl {
   int r;
   int l;
   int t;
+  int stop;
 };
 
 FlightControl RECEIVED_FLIGHT_CONTROL;
@@ -38,6 +39,7 @@ void constructFlightDirControl() {
     FLIGHT_DIR_CONTROL.r = RECEIVED_FLIGHT_CONTROL.val1;
     FLIGHT_DIR_CONTROL.l = RECEIVED_FLIGHT_CONTROL.val2;
     FLIGHT_DIR_CONTROL.t = RECEIVED_FLIGHT_CONTROL.val3;
+    FLIGHT_DIR_CONTROL.stop = RECEIVED_FLIGHT_CONTROL.val4;
   }
 }
 

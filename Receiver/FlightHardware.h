@@ -15,6 +15,7 @@ Servo motor;
 int rCurrentPos = 90;
 int lCurrentPos = 90;
 int currentMotor = 1000;
+bool imergencyStop = false;
 
 void setupServos() {
   rServo.attach(9);
@@ -54,7 +55,20 @@ void rotateServos() {
 }
 
 void updateMotor() {
-  int motorValue = 1000 + FLIGHT_DIR_CONTROL.t * 10;
+  if (FLIGHT_DIR_CONTROL.stop) {
+    imergencyStop = true;
+  }
+  if (FLIGHT_DIR_CONTROL.t == 0) {
+    imergencyStop = false;
+  }
+
+  int motorValue = 0;
+
+  if (imergencyStop) {
+    motorValue = 1000;
+  } else {
+    motorValue = 1000 + FLIGHT_DIR_CONTROL.t * 10;
+  }
   if (currentMotor == motorValue) {
     return;
   }

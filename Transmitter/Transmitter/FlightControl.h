@@ -20,6 +20,7 @@ struct FlightDirControl {
   int r;
   int l;
   int t;
+  int stop;
 };
 
 struct UserControl {
@@ -39,12 +40,7 @@ void constructDirControl() {
   FLIGHT_CONTROL_STRUCT.val1 = FLIGHT_DIR_CONTROL.r;
   FLIGHT_CONTROL_STRUCT.val2 = FLIGHT_DIR_CONTROL.l;
   FLIGHT_CONTROL_STRUCT.val3 = FLIGHT_DIR_CONTROL.t;
-
-  if (getSettingValue(SETTING_CLICKS_TO_STOP) == 1) {
-    FLIGHT_CONTROL_STRUCT.val4 = RC_ANALOGS.leftClick || RC_ANALOGS.rightClick;  
-  } else {
-    FLIGHT_CONTROL_STRUCT.val4 = RC_ANALOGS.leftClick && RC_ANALOGS.rightClick;  
-  }
+  FLIGHT_CONTROL_STRUCT.val4 = FLIGHT_DIR_CONTROL.stop;
 }
 
 void readUserControl() {
@@ -165,6 +161,15 @@ void readDirControl() {
   FLIGHT_DIR_CONTROL.t = USER_CONTROL.thrust * getSettingValue(SETTING_THRUST_SCALE) / 100;
 
   // Serial.println(FLIGHT_DIR_CONTROL.t);
+
+  if (getSettingValue(SETTING_CLICKS_TO_STOP) == 1) {
+    FLIGHT_DIR_CONTROL.stop = RC_ANALOGS.leftClick || RC_ANALOGS.rightClick;  
+  } else {
+    FLIGHT_DIR_CONTROL.stop = RC_ANALOGS.leftClick && RC_ANALOGS.rightClick;  
+  }
+
+  // Serial.println(FLIGHT_DIR_CONTROL.stop);
+
 }
 
 float applyLimit(float value, int minLimit, int maxLimit) {
