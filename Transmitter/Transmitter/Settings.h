@@ -13,8 +13,8 @@ struct RcSetting {
   float defaultValue;
 };
 
-RcSetting settings[19];
-const int SETTINGS_SIZE = 19;
+RcSetting settings[20];
+const int SETTINGS_SIZE = 20;
 
 const int SETTING_HORIZONTAL_ZERO = 51;
 const int SETTING_VERTICAL_ZERO = 52;
@@ -36,6 +36,7 @@ const int SETTING_RIGHT_TOP_LIMIT = 15;
 const int SETTING_RIGHT_BOTTOM_LIMIT = 16;
 const int SETTING_LEFT_TOP_LIMIT = 17;
 const int SETTING_LEFT_BOTTOM_LIMIT = 18;
+const int SETTING_CLICKS_TO_STOP = 20;
 
 void createSetting(struct RcSetting *s, int id, float min, float max, float step, float defaultValue){
   s->id = id;
@@ -66,6 +67,7 @@ void initSettings() {
   createSetting(&settings[16], SETTING_RIGHT_BOTTOM_LIMIT, 0, 100, 10, 100);
   createSetting(&settings[17], SETTING_LEFT_TOP_LIMIT, 0, 100, 10, 100);
   createSetting(&settings[18], SETTING_LEFT_BOTTOM_LIMIT, 0, 100, 10, 100);
+  createSetting(&settings[19], SETTING_CLICKS_TO_STOP, 1, 2, 1, 1); 
 }
 
 void initDefaults() {

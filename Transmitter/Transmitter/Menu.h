@@ -41,10 +41,11 @@ int getActiveScreen();
 //------Right Shift         #Item -100-100; 1; 0
 //------Left Shift          #Item -100-100; 1; 0
 //----Limits                #Group
-//------Right Top Limit       #Item 1-100; 5; 100
-//------Right Bottom Limit    #Item 1-100; 5; 100
-//------Left Top Limit        #Item 1-100; 5; 100
-//------Lefft Bottom Limit    #Item 1-100; 5; 100
+//------Right Top Limit     #Item 1-100; 5; 100
+//------Right Bottom Limit  #Item 1-100; 5; 100
+//------Left Top Limit      #Item 1-100; 5; 100
+//------Lefft Bottom Limit  #Item 1-100; 5; 100
+//----Clicks to stop        #Item 1-2;   1; 1
 //--Reset To Default        #Action
 //Telemetry                 #Group
 //--T Basic                 #Screen
@@ -74,6 +75,7 @@ const int ITEM_MENU_RIGHT_TOP_LIMIT = 15;
 const int ITEM_MENU_RIGHT_BOTTOM_LIMIT = 16;
 const int ITEM_MENU_LEFT_TOP_LIMIT = 17;
 const int ITEM_MENU_LEFT_BOTTOM_LIMIT = 18;
+const int ITEM_MENU_CLICKS_TO_STOP = 20;
 
 const int ACTION_MENU_DEFAULTS = 19;
 
@@ -96,8 +98,8 @@ struct menuItem {
   int type;
 };
 
-menuItem menuItems[28];
-const int MENU_SIZE = 28;
+menuItem menuItems[29];
+const int MENU_SIZE = 29;
 
 menuItem *activeMenuItem;
 bool edit = false;
@@ -119,6 +121,8 @@ void setupMenu() {
   addMenuItem(&menuItems[8], ACTION_MENU_SET_THRUST_MAX, GROUP_MENU_SETUP_ANALOGS, "Set Thrust Max", ITEM_TYPE_ACTION);
 
   addMenuItem(&menuItems[9], GROUP_MENU_SETUP_RC, GROUP_MENU_SETTINGS, "Setup RC", ITEM_TYPE_MENU_GROUP);
+
+  addMenuItem(&menuItems[28], ITEM_MENU_CLICKS_TO_STOP, GROUP_MENU_SETUP_RC, "Stop Clicks", ITEM_TYPE_MENU_SETTING);
 
   addMenuItem(&menuItems[9], GROUP_MENU_SETUP_RC, GROUP_MENU_SETTINGS, "Setup RC", ITEM_TYPE_MENU_GROUP);
 
@@ -144,7 +148,7 @@ void setupMenu() {
 
   addMenuItem(&menuItems[21], GROUP_MENU_TELEMETRY, 0, "Telemetry", ITEM_TYPE_MENU_GROUP);
   addMenuItem(&menuItems[22], SCREEN_TELEMENTRY_1, GROUP_MENU_TELEMETRY, "T Basic", ITEM_TYPE_SCREEN);
-  addMenuItem(&menuItems[22], SCREEN_TELEMENTRY_2, GROUP_MENU_TELEMETRY, "RC", ITEM_TYPE_SCREEN);
+  addMenuItem(&menuItems[27], SCREEN_TELEMENTRY_2, GROUP_MENU_TELEMETRY, "RC", ITEM_TYPE_SCREEN);
 
   addMenuItem(&menuItems[23], ACTION_MENU_DEFAULTS, GROUP_MENU_SETTINGS, "Set Detaults", ITEM_TYPE_ACTION);
 
