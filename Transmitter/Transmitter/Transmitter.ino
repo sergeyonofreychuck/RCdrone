@@ -71,8 +71,7 @@ void loop_20ms() {
 
 void loop_100ms() {
   constructDirControl();
-  writeRadioWithAck(&FLIGHT_CONTROL_STRUCT, &FLIGHT_CONTROL_ACK);
-  //radioTest();
+  writeRadio();
 }
 
 void loop_500ms() {

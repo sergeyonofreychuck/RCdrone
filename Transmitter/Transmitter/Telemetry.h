@@ -13,8 +13,8 @@ void drawTelemetry1() {
 }
 
 void drawTelemetry2() {
-  int powerVal = analogRead(A6);
-  int percentage = map(powerVal, 714 ,1000, 0, 100);
+  int powerVal = analogRead(A7);
+  int percentage = map(powerVal, 708 ,980, 0, 100);
   // Serial.print("power: "); 
   // Serial.println(powerVal); 
   // Serial.println(percentage); 

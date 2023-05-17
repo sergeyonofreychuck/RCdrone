@@ -2,82 +2,100 @@
 #define RC_RADIO
 
 #include <SPI.h>
-#include <nRF24L01.h>
-#include <RF24.h>
+#include <LoRa.h>
 
-const uint64_t radio_pipe = 0xE8E8F0F0E1LL; //Remember that this code should be the same for the receiver
+void onReceive(int packetSize);
+void receiveFailed();
+void receiveSuccess();
+int readInt();
 
-RF24 radio(48, 53);
+byte localAddress = 0xB1;     // address of this device
+byte destination = 0xB2;      // destination to send to
+
+unsigned long last_radio_received = 0;
 
 void setupRadio() {
-  radio.begin();
-  radio.setDataRate(RF24_250KBPS);
-  radio.enableAckPayload();
-  radio.openWritingPipe(radio_pipe);  
-  radio.openReadingPipe(1, radio_pipe);  // using pipe 1
+  LoRa.setPins(53, 48, 18);// set CS, reset, IRQ pin
+
+  Serial.println("LoRa Transmiter");
+  if (!LoRa.begin(433E6)) { // or 915E6
+    Serial.println("Starting LoRa failed!");
+  }
+
+  LoRa.onReceive(onReceive);
+  LoRa.receive();
 }
 
-void writeRadioWithAck(FlightControl *payload, FlightControl *ack) {
-    
-  bool result = radio.write(payload, sizeof(FlightControl));
+void writeRadio() {
+  LoRa.beginPacket();                   // start packet
+  LoRa.write(destination);              // add destination address
+  LoRa.write(localAddress);             // add sender address
+  LoRa.write(FLIGHT_CONTROL_STRUCT.id); // add message ID
+  LoRa.write(sizeof(FlightControl));    // add payload length
+  LoRa.write(FLIGHT_CONTROL_STRUCT.id); // add payload
+  LoRa.write(FLIGHT_CONTROL_STRUCT.type);  
+  LoRa.write(FLIGHT_CONTROL_STRUCT.val1);  
+  LoRa.write(FLIGHT_CONTROL_STRUCT.val2);  
+  LoRa.write(FLIGHT_CONTROL_STRUCT.val3);  
+  LoRa.write(FLIGHT_CONTROL_STRUCT.val4);  
+  LoRa.endPacket(); 
 
-  //Serial.print("Payload Write ");
-  //Serial.println(result);
+  if (millis() - last_radio_received > 3000) {
+    receiveFailed();  
+  }   
 
-  if (radio.available()) {  // is there an ACK payload? grab the pipe number that received it
-    radio.read(ack, sizeof(FlightControl));
-    Serial.print("Ack received ");
-    Serial.println(FLIGHT_CONTROL_ACK.id);
-    delay(100);
-    digitalWrite(37,HIGH);
-    delay(100);
-    digitalWrite(37,LOW);
-  } else {
-    Serial.println("Recieved: an empty ACK packet");  // empty ACK packet received
-    delay(100);
-    digitalWrite(35,HIGH);
-    delay(100);
-    digitalWrite(35,LOW);
-  }
+  LoRa.receive(); 
 }
 
-struct Data_to_be_sent {
-  byte ch1; 
-};
+int readInt() {
+  if (!LoRa.available()){
+    return -1;
+  }  
+  return LoRa.read();
+}
 
-Data_to_be_sent sent_data;
+void onReceive(int packetSize) {
+  if (packetSize == 0) return;          // if there's no packet, return
 
-void radioTest()
-{ 
-  Serial.print("radioTest() ");
+  // read packet header bytes:
+  int recipient = LoRa.read();          // recipient address
+  byte sender = LoRa.read();            // sender address
+  byte incomingMsgId = LoRa.read();     // incoming msg ID
+  byte incomingLength = LoRa.read();    // incoming msg length
 
-  sent_data.ch1 = sent_data.ch1+1;
-
-  bool result = radio.write(&sent_data, sizeof(Data_to_be_sent));
-
-  Serial.println(result);
-
-  if (radio.available()) {  // is there an ACK payload? grab the pipe number that received it
-        Data_to_be_sent received;
-        radio.read(&received, sizeof(received));  // get incoming ACK payload
-        Serial.print(F(" Recieved "));
-        Serial.print(radio.getDynamicPayloadSize());  // print incoming payload size
-        Serial.print(F(" bytes"));
-        Serial.print(F(": "));
-        Serial.println(received.ch1);    // print incoming message
-
-        delay(100);
-        digitalWrite(37,HIGH);
-        delay(100);
-        digitalWrite(37,LOW);
-  } else {
-    Serial.println(F(" Recieved: an empty ACK packet"));  // empty ACK packet received
-
-    delay(100);
-    digitalWrite(35,HIGH);
-    delay(100);
-    digitalWrite(35,LOW);
+  if (recipient != localAddress) {
+    Serial.println("This message is not for me.");
+    receiveFailed();
+    return; 
   }
+
+  if (incomingLength != sizeof(FlightControl)) {  
+    Serial.println("error: message length does not match length");
+    receiveFailed();
+    return;                             
+  }
+
+  FLIGHT_CONTROL_ACK.id = readInt();
+  FLIGHT_CONTROL_ACK.type = readInt();
+  FLIGHT_CONTROL_ACK.val1 = readInt();
+  FLIGHT_CONTROL_ACK.val2 = readInt();
+  FLIGHT_CONTROL_ACK.val3 = readInt();
+  FLIGHT_CONTROL_ACK.val4 = readInt(); 
+
+  //printFlightControl(&FLIGHT_CONTROL_ACK);
+  last_radio_received = millis();
+  receiveSuccess();
+}
+
+void receiveFailed(){
+  digitalWrite(37,LOW);
+  digitalWrite(35,HIGH);
+}
+
+void receiveSuccess(){
+  last_radio_received = millis();
+  digitalWrite(37,HIGH);
+  digitalWrite(35,LOW);
 }
 
 #endif

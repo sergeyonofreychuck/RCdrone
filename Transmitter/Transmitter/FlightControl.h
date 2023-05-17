@@ -183,4 +183,19 @@ float applyLimit(float value, int minLimit, int maxLimit) {
   return value;
 }
 
+void printFlightControl(FlightControl *flightControl) {
+  Serial.print("FlightControl id:");
+  Serial.print(flightControl->id);
+  Serial.print(" type:"); 
+  Serial.print(flightControl->type);
+  Serial.print(" val1:"); 
+  Serial.print(flightControl->val1);
+  Serial.print(" val2:"); 
+  Serial.print(flightControl->val2);
+  Serial.print(" val3:"); 
+  Serial.print(flightControl->val3);
+  Serial.print(" val4:"); 
+  Serial.println(flightControl->val4);
+}
+
 #endif

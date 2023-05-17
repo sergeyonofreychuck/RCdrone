@@ -41,6 +41,10 @@ void loop() {
     loop_20ms();
   }
 
+  if (loopCounter%5 == 0) {
+    loop_50ms();
+  }
+
   if (loopCounter%10 == 0) {
     loop_100ms();
   }
@@ -55,23 +59,25 @@ void loop() {
 }  
 
 void loop_10ms() {
-  communicateWithTransmitter();
+}
+
+void loop_20ms() {
+}
+
+void loop_50ms() {
   constructFlightDirControl();
   updateServos();
   updateMotor();
   updateLeds();
 }
 
-void loop_20ms() {
-}
-
 void loop_100ms() {
-  updateBatteryState();
 }
 
 void loop_500ms() {
-  updateBatteryState();
 }
 
 void loop_1000ms() {
+  updateBatteryState();
+  writeRadio();
 }
