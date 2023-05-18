@@ -56,19 +56,23 @@ void loop() {
   if (loopCounter%100 == 0) {
     loop_1000ms();
   }
+
+  if (loopCounter%1000 == 0) {
+    loop_10000ms();
+  }
 }  
 
 void loop_10ms() {
+  constructFlightDirControl();
+  updateServos();
+  updateMotor();
+  updateLeds();
 }
 
 void loop_20ms() {
 }
 
 void loop_50ms() {
-  constructFlightDirControl();
-  updateServos();
-  updateMotor();
-  updateLeds();
 }
 
 void loop_100ms() {
@@ -80,4 +84,7 @@ void loop_500ms() {
 void loop_1000ms() {
   updateBatteryState();
   writeRadio();
+}
+
+void loop_10000ms() {
 }

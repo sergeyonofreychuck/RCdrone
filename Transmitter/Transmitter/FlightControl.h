@@ -14,6 +14,7 @@ struct FlightControl {
   int val2;
   int val3;
   int val4;
+  int checksum;
 };
 
 struct FlightDirControl {
@@ -41,6 +42,13 @@ void constructDirControl() {
   FLIGHT_CONTROL_STRUCT.val2 = FLIGHT_DIR_CONTROL.l;
   FLIGHT_CONTROL_STRUCT.val3 = FLIGHT_DIR_CONTROL.t;
   FLIGHT_CONTROL_STRUCT.val4 = FLIGHT_DIR_CONTROL.stop;
+  FLIGHT_CONTROL_STRUCT.checksum = 
+    FLIGHT_CONTROL_STRUCT.id +
+    FLIGHT_CONTROL_STRUCT.type + 
+    FLIGHT_CONTROL_STRUCT.val1 +
+    FLIGHT_CONTROL_STRUCT.val2 +
+    FLIGHT_CONTROL_STRUCT.val3 +
+    FLIGHT_CONTROL_STRUCT.val4;
 }
 
 void readUserControl() {

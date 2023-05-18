@@ -27,6 +27,7 @@ void setupRadio() {
 }
 
 void writeRadio() {
+  //printFlightControl(&FLIGHT_CONTROL_STRUCT);
   LoRa.beginPacket();                   // start packet
   LoRa.write(destination);              // add destination address
   LoRa.write(localAddress);             // add sender address
@@ -38,6 +39,7 @@ void writeRadio() {
   LoRa.write(FLIGHT_CONTROL_STRUCT.val2);  
   LoRa.write(FLIGHT_CONTROL_STRUCT.val3);  
   LoRa.write(FLIGHT_CONTROL_STRUCT.val4);  
+  LoRa.write(FLIGHT_CONTROL_STRUCT.checksum); 
   LoRa.endPacket(); 
 
   if (millis() - last_radio_received > 3000) {
@@ -75,12 +77,28 @@ void onReceive(int packetSize) {
     return;                             
   }
 
-  FLIGHT_CONTROL_ACK.id = readInt();
-  FLIGHT_CONTROL_ACK.type = readInt();
-  FLIGHT_CONTROL_ACK.val1 = readInt();
-  FLIGHT_CONTROL_ACK.val2 = readInt();
-  FLIGHT_CONTROL_ACK.val3 = readInt();
-  FLIGHT_CONTROL_ACK.val4 = readInt(); 
+  int id = readInt();
+  int type = readInt();
+  int val1 = readInt();
+  int val2 = readInt();
+  int val3 = readInt();
+  int val4 = readInt(); 
+  int checksum = readInt(); 
+  
+  char calcChecksum = id + type + val1 + val2 + val3 + val4;
+  if (calcChecksum != checksum) {
+    Serial.println("wrong checksum");
+    receiveFailed();
+    return;      
+  }
+
+  FLIGHT_CONTROL_ACK.id = id;
+  FLIGHT_CONTROL_ACK.type = type;
+  FLIGHT_CONTROL_ACK.val1 = val1;
+  FLIGHT_CONTROL_ACK.val2 = val2;
+  FLIGHT_CONTROL_ACK.val3 = val3;
+  FLIGHT_CONTROL_ACK.val4 = val4; 
+  FLIGHT_CONTROL_ACK.checksum = checksum; 
 
   //printFlightControl(&FLIGHT_CONTROL_ACK);
   last_radio_received = millis();

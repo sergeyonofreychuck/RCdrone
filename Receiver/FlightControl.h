@@ -10,6 +10,7 @@ struct FlightControl {
   int val2;
   int val3;
   int val4;
+  int checksum;
 };
 
 struct FlightDirControl {
@@ -32,6 +33,17 @@ void initFlightControl() {
   RECEIVED_FLIGHT_CONTROL.val2 = 0;
   RECEIVED_FLIGHT_CONTROL.val3 = 0;
   RECEIVED_FLIGHT_CONTROL.val4 = 0;
+  RECEIVED_FLIGHT_CONTROL.checksum = 0;
+}
+
+void updateAckFlightControl() {
+  ACK_FLIGHT_CONTROL.checksum = 
+    ACK_FLIGHT_CONTROL.id +
+    ACK_FLIGHT_CONTROL.type + 
+    ACK_FLIGHT_CONTROL.val1 +
+    ACK_FLIGHT_CONTROL.val2 +
+    ACK_FLIGHT_CONTROL.val3 +
+    ACK_FLIGHT_CONTROL.val4;
 }
 
 void constructFlightDirControl() {
