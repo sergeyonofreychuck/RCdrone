@@ -50,7 +50,7 @@ void updateServos() {
 }
 
 void rotateServos() {
-  Serial.println("rotateServos"); 
+  //Serial.println("rotateServos"); 
   rServo.write(rCurrentPos);
   lServo.write(lCurrentPos); 
 }

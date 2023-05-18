@@ -1,6 +1,9 @@
 #ifndef RC_LED_MANAGER
 #define RC_LED_MANAGER
 
+#include "Radio.h"
+#include "FlightHardware.h"
+
 void setupLeds(){
   pinMode(7,OUTPUT);
   pinMode(8,OUTPUT);
@@ -13,7 +16,8 @@ void setupLeds(){
 
 void updateLeds() {
   if (millis() - last_radio_update < 100 || imergencyStop) {
-    digitalWrite(7,HIGH);    
+    digitalWrite(7,HIGH);   
+    digitalWrite(8,LOW); 
   } else if (millis() - last_radio_update > 100 && !imergencyStop){
     digitalWrite(7,LOW);    
   }
@@ -24,6 +28,11 @@ void updateLeds() {
   } else {
     digitalWrite(8,LOW);
   }
+}
+
+void showError(){
+  digitalWrite(8,HIGH);  
+  digitalWrite(7,LOW); 
 }
 
 #endif

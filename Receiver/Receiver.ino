@@ -63,7 +63,9 @@ void loop() {
 }  
 
 void loop_10ms() {
-  constructFlightDirControl();
+  if (receiveRadio()) {
+    constructFlightDirControl();
+  }
   updateServos();
   updateMotor();
   updateLeds();

@@ -6,10 +6,10 @@
 
 int readInt();
 void onReceive(int packetSize);
+unsigned long last_radio_update = 0;
 
 #include "FlightControl.h"
-
-unsigned long last_radio_update = 0;
+#include "LedManager.h"
 
 byte localAddress = 0xB2;     // address of this device
 byte destination = 0xB1;      // destination to send to
@@ -23,8 +23,8 @@ void setupRadio()
     Serial.println("Starting LoRa failed!");
   }
 
-  LoRa.onReceive(onReceive);
-  LoRa.receive();
+  // LoRa.onReceive(onReceive);
+  // LoRa.receive();
 }
 
 void writeRadio() {
@@ -46,7 +46,6 @@ void writeRadio() {
 }
 
 int receiveRadio(){ 
-
   int packetSize = LoRa.parsePacket();
   onReceive(packetSize);
   return packetSize;
@@ -71,11 +70,13 @@ void onReceive(int packetSize) {
 
   if (recipient != localAddress) {
     Serial.println("This message is not for me.");
+    showError();
     return; 
   }
 
   if (incomingLength != sizeof(FlightControl)) {  
     Serial.println("error: message length does not match length");
+    showError();
     return;                             
   }
 
@@ -90,6 +91,7 @@ void onReceive(int packetSize) {
   char calcChecksum = id + type + val1 + val2 + val3 + val4;
   if (calcChecksum != checksum) {
     Serial.println("wrong checksum");
+    showError();
     return;      
   }
 
