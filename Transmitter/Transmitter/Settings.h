@@ -13,8 +13,8 @@ struct RcSetting {
   float defaultValue;
 };
 
-RcSetting settings[20];
-const int SETTINGS_SIZE = 20;
+RcSetting settings[22];
+const int SETTINGS_SIZE = 22;
 
 const int SETTING_HORIZONTAL_ZERO = 51;
 const int SETTING_VERTICAL_ZERO = 52;
@@ -30,6 +30,9 @@ const int SETTING_LEFT_SCALE = 9;
 const int SETTING_TOP_SCALE = 10;
 const int SETTING_BOTTOM_SCALE = 11;
 const int SETTING_THRUST_SCALE = 12;
+const int SETTING_TURN_SCALE = 21;
+const int SETTING_TURN_OPS_SCALE = 22;
+
 const int SETTING_RIGHT_SHIFT = 13;
 const int SETTING_LEFT_SHIFT = 14;
 const int SETTING_RIGHT_TOP_LIMIT = 15;
@@ -61,6 +64,9 @@ void initSettings() {
   createSetting(&settings[10], SETTING_TOP_SCALE, 0, 100, 10, 100);
   createSetting(&settings[11], SETTING_BOTTOM_SCALE, 0, 100, 10, 100);
   createSetting(&settings[12], SETTING_THRUST_SCALE, 0, 100, 5, 100);
+  createSetting(&settings[20], SETTING_TURN_SCALE, -100, 100, 10, 100);
+  createSetting(&settings[21], SETTING_TURN_OPS_SCALE, -100, 100, 10, 0);
+
   createSetting(&settings[13], SETTING_RIGHT_SHIFT, -100, 100, 2, 0);
   createSetting(&settings[14], SETTING_LEFT_SHIFT, -100, 100, 2, 0);
   createSetting(&settings[15], SETTING_RIGHT_TOP_LIMIT, 0, 100, 10, 100);

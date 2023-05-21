@@ -36,6 +36,8 @@ int getActiveScreen();
 //------Left Scale          #Item 1-100; 10; 100 
 //------Top Scale           #Item 1-100; 10; 100
 //------Bottom Scale        #Item 1-100; 10; 100
+//------Turn Scale          #Item -100-100; 10; 100 scale of turn 
+//------Turn Oposite Scale  #Item -100-100; 10; 0 scale of oposite turn
 //------Thrust Scale        #Item 1-100; 5; 100
 //----Shifts                #Group
 //------Right Shift         #Item -100-100; 1; 0
@@ -69,6 +71,9 @@ const int ITEM_MENU_LEFT_SCALE = 9;
 const int ITEM_MENU_TOP_SCALE = 10;
 const int ITEM_MENU_BOTTOM_SCALE = 11;
 const int ITEM_MENU_THRUST_SCALE = 12;
+const int ITEM_MENU_TURN_SCALE = 21;
+const int ITEM_MENU_TURN_OPS_SCALE = 22;
+
 const int ITEM_MENU_RIGHT_SHIFT = 13;
 const int ITEM_MENU_LEFT_SHIFT = 14;
 const int ITEM_MENU_RIGHT_TOP_LIMIT = 15;
@@ -98,8 +103,8 @@ struct menuItem {
   int type;
 };
 
-menuItem menuItems[29];
-const int MENU_SIZE = 29;
+menuItem menuItems[31];
+const int MENU_SIZE = 31;
 
 menuItem *activeMenuItem;
 bool edit = false;
@@ -133,6 +138,8 @@ void setupMenu() {
   addMenuItem(&menuItems[12], ITEM_MENU_TOP_SCALE, GROUP_MENU_SETUP_SCALES, "T Scale", ITEM_TYPE_MENU_SETTING);
   addMenuItem(&menuItems[13], ITEM_MENU_BOTTOM_SCALE, GROUP_MENU_SETUP_SCALES, "B Scale", ITEM_TYPE_MENU_SETTING);
   addMenuItem(&menuItems[14], ITEM_MENU_THRUST_SCALE, GROUP_MENU_SETUP_SCALES, "Th Scale", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[29], ITEM_MENU_TURN_SCALE, GROUP_MENU_SETUP_SCALES, "Turn Scale", ITEM_TYPE_MENU_SETTING);
+  addMenuItem(&menuItems[30], ITEM_MENU_TURN_OPS_SCALE, GROUP_MENU_SETUP_SCALES, "Turn O Scale", ITEM_TYPE_MENU_SETTING);
 
   addMenuItem(&menuItems[25], GROUP_MENU_SETUP_SHIFTS, GROUP_MENU_SETUP_RC, "Shifts", ITEM_TYPE_MENU_GROUP);
 
@@ -164,9 +171,9 @@ void addMenuItem(struct menuItem *item, int id, int parent, String name, int typ
 }
 
 void redrowMenu() {
-  Serial.println("redrowMenu");
-  Serial.println(activeMenuItem->type);
-  Serial.println(activeMenuItem->id);
+  // Serial.println("redrowMenu");
+  // Serial.println(activeMenuItem->type);
+  // Serial.println(activeMenuItem->id);
 
   if (activeMenuItem->type == ITEM_TYPE_MENU_SETTING) {
     RcSetting *setting = getSetting(activeMenuItem->id);
