@@ -15,9 +15,10 @@ struct RcSetting {
 
 RcSetting settings[22];
 const int SETTINGS_SIZE = 22;
+int addSettingCounter = 0;
 
-const int SETTING_HORIZONTAL_ZERO = 51;
-const int SETTING_VERTICAL_ZERO = 52;
+const int SETTING_HORIZONTAL_ZERO = 0;
+const int SETTING_VERTICAL_ZERO = 1;
 const int SETTING_RIGHT_CONTROL_LIMIT = 2;
 const int SETTING_LEFT_CONTROL_LIMIT = 3;
 const int SETTING_TOP_CONTROL_LIMIT = 4;
@@ -30,18 +31,21 @@ const int SETTING_LEFT_SCALE = 9;
 const int SETTING_TOP_SCALE = 10;
 const int SETTING_BOTTOM_SCALE = 11;
 const int SETTING_THRUST_SCALE = 12;
-const int SETTING_TURN_SCALE = 21;
-const int SETTING_TURN_OPS_SCALE = 22;
+const int SETTING_TURN_SCALE = 13;
+const int SETTING_TURN_OPS_SCALE = 14;
 
-const int SETTING_RIGHT_SHIFT = 13;
-const int SETTING_LEFT_SHIFT = 14;
-const int SETTING_RIGHT_TOP_LIMIT = 15;
-const int SETTING_RIGHT_BOTTOM_LIMIT = 16;
-const int SETTING_LEFT_TOP_LIMIT = 17;
-const int SETTING_LEFT_BOTTOM_LIMIT = 18;
-const int SETTING_CLICKS_TO_STOP = 20;
+const int SETTING_RIGHT_SHIFT = 15;
+const int SETTING_LEFT_SHIFT = 16;
 
-void createSetting(struct RcSetting *s, int id, float min, float max, float step, float defaultValue){
+const int SETTING_RIGHT_TOP_LIMIT = 17;
+const int SETTING_RIGHT_BOTTOM_LIMIT = 18;
+const int SETTING_LEFT_TOP_LIMIT = 19;
+const int SETTING_LEFT_BOTTOM_LIMIT = 20;
+const int SETTING_CLICKS_TO_STOP = 21;
+
+void createSetting(int id, float min, float max, float step, float defaultValue){
+  RcSetting *s = settings + addSettingCounter;
+  addSettingCounter++;
   s->id = id;
   s->addr = id*4;
   s->min = min;
@@ -51,29 +55,32 @@ void createSetting(struct RcSetting *s, int id, float min, float max, float step
 }
 
 void initSettings() {
-  createSetting(&settings[0], SETTING_HORIZONTAL_ZERO, 0, 1023, 1, 511);
-  createSetting(&settings[1], SETTING_VERTICAL_ZERO, 0, 1023, 1, 511);
-  createSetting(&settings[2], SETTING_RIGHT_CONTROL_LIMIT, 0, 1023, 1, 0);
-  createSetting(&settings[3], SETTING_LEFT_CONTROL_LIMIT, 0, 1023, 1, 1023);
-  createSetting(&settings[4], SETTING_TOP_CONTROL_LIMIT, 0, 1023, 1, 1023);
-  createSetting(&settings[5], SETTING_BOTTOM_CONTROL_LIMIT, 0, 1023, 1, 0);
-  createSetting(&settings[6], SETTING_THRUST_MIN, 0, 1023, 1, 0);
-  createSetting(&settings[7], SETTING_THRUST_MAX, 0, 1023, 1, 1023);
-  createSetting(&settings[8], SETTING_RIGHT_SCALE, 0, 100, 10, 100);
-  createSetting(&settings[9], SETTING_LEFT_SCALE, 0, 100, 10, 100);
-  createSetting(&settings[10], SETTING_TOP_SCALE, 0, 100, 10, 100);
-  createSetting(&settings[11], SETTING_BOTTOM_SCALE, 0, 100, 10, 100);
-  createSetting(&settings[12], SETTING_THRUST_SCALE, 0, 100, 5, 100);
-  createSetting(&settings[20], SETTING_TURN_SCALE, -100, 100, 10, 100);
-  createSetting(&settings[21], SETTING_TURN_OPS_SCALE, -100, 100, 10, 0);
+  createSetting(SETTING_HORIZONTAL_ZERO, 0, 1023, 1, 511);
+  createSetting(SETTING_VERTICAL_ZERO, 0, 1023, 1, 511);
+  createSetting(SETTING_RIGHT_CONTROL_LIMIT, 0, 1023, 1, 0);
+  createSetting(SETTING_LEFT_CONTROL_LIMIT, 0, 1023, 1, 1023);
+  createSetting(SETTING_TOP_CONTROL_LIMIT, 0, 1023, 1, 1023);
+  createSetting(SETTING_BOTTOM_CONTROL_LIMIT, 0, 1023, 1, 0);
+  createSetting(SETTING_THRUST_MIN, 0, 1023, 1, 0);
+  createSetting(SETTING_THRUST_MAX, 0, 1023, 1, 1023);
 
-  createSetting(&settings[13], SETTING_RIGHT_SHIFT, -100, 100, 2, 0);
-  createSetting(&settings[14], SETTING_LEFT_SHIFT, -100, 100, 2, 0);
-  createSetting(&settings[15], SETTING_RIGHT_TOP_LIMIT, 0, 100, 10, 100);
-  createSetting(&settings[16], SETTING_RIGHT_BOTTOM_LIMIT, 0, 100, 10, 100);
-  createSetting(&settings[17], SETTING_LEFT_TOP_LIMIT, 0, 100, 10, 100);
-  createSetting(&settings[18], SETTING_LEFT_BOTTOM_LIMIT, 0, 100, 10, 100);
-  createSetting(&settings[19], SETTING_CLICKS_TO_STOP, 1, 2, 1, 1); 
+  createSetting(SETTING_RIGHT_SCALE, 0, 100, 10, 100);
+  createSetting(SETTING_LEFT_SCALE, 0, 100, 10, 100);
+  createSetting(SETTING_TOP_SCALE, 0, 100, 10, 100);
+  createSetting(SETTING_BOTTOM_SCALE, 0, 100, 10, 100);
+  createSetting(SETTING_THRUST_SCALE, 0, 100, 5, 100);
+  createSetting(SETTING_TURN_SCALE, -100, 100, 10, 100);
+  createSetting(SETTING_TURN_OPS_SCALE, -100, 100, 10, 0);
+
+  createSetting(SETTING_RIGHT_SHIFT, -100, 100, 2, 0);
+  createSetting(SETTING_LEFT_SHIFT, -100, 100, 2, 0);
+
+  createSetting(SETTING_RIGHT_TOP_LIMIT, 0, 100, 10, 100);
+  createSetting(SETTING_RIGHT_BOTTOM_LIMIT, 0, 100, 10, 100);
+  createSetting(SETTING_LEFT_TOP_LIMIT, 0, 100, 10, 100);
+  createSetting(SETTING_LEFT_BOTTOM_LIMIT, 0, 100, 10, 100);
+
+  createSetting(SETTING_CLICKS_TO_STOP, 1, 2, 1, 2); 
 }
 
 void initDefaults() {

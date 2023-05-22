@@ -160,7 +160,7 @@ void showIntScreen(String name, int value, int left, int right, int mid){
 }
 
 void showGroupItem(String name){
-  // Serial.println("showGroupItem ");
+  // Serial.println("showGroupItem xxx");
   // Serial.println(name);  
 
   lcd.clear();
