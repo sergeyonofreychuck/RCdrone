@@ -3,15 +3,20 @@
 #include "FlightHardware.h"
 #include "PowerControl.h"
 #include "LedManager.h"
+#include "Gyro.h"
 
 // 8 - red LED
 // 7 - green LED
 // 10, 4 - RADIO CSN and CE pins
 // 9, 6 servos
 // 5 motor
-// A7 motor
+// A7 battery input
 
 int loopCounter = 0;
+
+uint32_t LoopTimer4ms;
+uint32_t LoopTimer10ms;
+uint32_t LoopTimer1000ms;
 
 void setup()
 {
@@ -29,38 +34,30 @@ void setup()
   setupRadio();
 
   updateBatteryState();
+  setupGyro();
 }
 
 void loop() {
-  loopCounter++;
-  delay(10);
 
-  loop_10ms();
-
-  if (loopCounter%2 == 0) {
-    loop_20ms();
+  if (micros() - LoopTimer4ms > 4000) {
+    LoopTimer4ms = micros();
+    loop_4ms();
   }
 
-  if (loopCounter%5 == 0) {
-    loop_50ms();
+  if (micros() - LoopTimer10ms > 10000) {
+    LoopTimer10ms = micros();
+    loop_10ms();
   }
 
-  if (loopCounter%10 == 0) {
-    loop_100ms();
-  }
-
-  if (loopCounter%50 == 0) {
-    loop_500ms();
-  }
-
-  if (loopCounter%100 == 0) {
+  if (micros() - LoopTimer1000ms > 1000000) {
+    LoopTimer1000ms = micros();
     loop_1000ms();
   }
-
-  if (loopCounter%1000 == 0) {
-    loop_10000ms();
-  }
 }  
+
+void loop_4ms() {
+  readGyro();
+}
 
 void loop_10ms() {
   if (receiveRadio()) {
@@ -69,18 +66,6 @@ void loop_10ms() {
   updateServos();
   updateMotor();
   updateLeds();
-}
-
-void loop_20ms() {
-}
-
-void loop_50ms() {
-}
-
-void loop_100ms() {
-}
-
-void loop_500ms() {
 }
 
 void loop_1000ms() {
